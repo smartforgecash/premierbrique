@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="fr-FR">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{{ page.title }} | Premier Brique</title>
+    <link href="https://cdn.prod.website-files.com/6875f542c80274f9d512a0d3/css/la-premiere-briques-new.webflow.shared.064b979f4.min.css" rel="stylesheet" type="text/css">
+    <link href="https://fonts.googleapis.com" rel="preconnect">
+    <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin="anonymous">
+    <script src="https://ajax.googleapis.com/ajax/libs/webfont/1.6.26/webfont.js"></script>
+    <script>WebFont.load({ google: { families: ["Manrope:300,400,500,600,700"] } });</script>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/navbar.css">
+    <style>
+      body { font-family: Manrope, sans-serif; background: #fff; color: #101010; }
+      .public-hero { min-height: 72vh; display: grid; align-items: center; padding: 140px 32px 72px; }
+      .public-inner { width: min(1080px, 100%); margin: 0 auto; display: grid; gap: 28px; }
+      .public-eyebrow { display: inline-flex; width: fit-content; padding: 10px 16px; border-radius: 8px; background: #f3ff84; color: #657000; font-weight: 800; }
+      .public-title { font-size: clamp(42px, 7vw, 86px); line-height: .95; letter-spacing: 0; margin: 0; max-width: 880px; }
+      .public-body { color: #5e5e5e; font-size: clamp(18px, 2vw, 24px); max-width: 760px; line-height: 1.45; }
+      .public-list { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; margin-top: 16px; }
+      .public-card { border: 1px solid #eadfd4; border-radius: 8px; padding: 20px; background: #fbf5ee; font-weight: 700; }
+      .public-actions { display: flex; gap: 12px; flex-wrap: wrap; }
+      .public-btn { min-height: 48px; display: inline-flex; align-items: center; justify-content: center; padding: 0 22px; border-radius: 8px; text-decoration: none; font-weight: 800; border: 1px solid #a42515; }
+      .public-btn.primary { background: #a42515; color: #fff; }
+      .public-btn.secondary { color: #a42515; background: #fff; }
+    </style>
+    {% include "analytics.html" %}
+  </head>
+  <body>
+    {% include "navbar.html" with navbar_variant="white" %}
+    <main class="public-hero">
+      <section class="public-inner">
+        <div class="public-eyebrow">{{ page.eyebrow }}</div>
+        <h1 class="public-title">{{ page.heading }}</h1>
+        <p class="public-body">{{ page.body }}</p>
+        <div class="public-list">
+          {% for item in page.items %}
+            <div class="public-card">{{ item }}</div>
+          {% endfor %}
+        </div>
+        <div class="public-actions">
+          <a class="public-btn primary" href="/projects.html">Voir les projets</a>
+          <a class="public-btn secondary" href="/signup.html">Rejoindre les briqueurs</a>
+        </div>
+      </section>
+    </main>
+    <script src="/js/main.js"></script>
+    <script src="/js/auth.js"></script>
+  </body>
+</html>

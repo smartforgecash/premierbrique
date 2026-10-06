@@ -1,0 +1,20 @@
+{% extends "investments/base_app.html" %}
+{% block title %}Finaliser mon inscription | Premier Brique{% endblock %}
+{% block content %}
+<section class="onboarding-shell">
+  <a class="back-link" href="/account/"><i class="ph ph-arrow-left"></i> Retour au tableau de bord</a>
+  <h1>Finalisez votre inscription</h1>
+  <p class="muted">Trois étapes rapides pour préparer votre espace investisseur.</p>
+  <div class="onboarding-steps">
+    <div class="onboarding-step is-done">
+      <span>1</span><div><strong>Compte créé</strong><small>Votre accès est actif.</small></div><i class="ph ph-check"></i>
+    </div>
+    <a class="onboarding-step {% if profile.is_complete %}is-done{% endif %}" href="/onboarding/profile/">
+      <span>2</span><div><strong>Informations personnelles</strong><small>Identité, adresse et coordonnées.</small></div><i class="ph ph-caret-right"></i>
+    </a>
+    <a class="onboarding-step {% if profile.risk_score %}is-done{% endif %}" href="/onboarding/questionnaire/">
+      <span>3</span><div><strong>Questionnaire investisseur</strong><small>Évaluez votre expérience et votre tolérance au risque.</small></div><i class="ph ph-caret-right"></i>
+    </a>
+  </div>
+</section>
+{% endblock %}

@@ -1,0 +1,175 @@
+{% extends "investments/base_app.html" %}
+{% block title %}Profil investisseur | Premier Brique{% endblock %}
+{% block content %}
+  <section class="form-card profile-onboarding-card">
+    <div class="eyebrow">Étape 2 sur 4</div>
+    <h1>Complétez votre profil investisseur</h1>
+    <p class="muted">Ces informations préparent la vérification KYC et l'accès aux souscriptions.</p>
+    
+    <form method="post" id="onboarding-form">
+      {% csrf_token %}
+      
+      {% if form.non_field_errors %}
+        <div class="alert-box alert-error">
+          <i class="ph ph-warning"></i>
+          <span>{{ form.non_field_errors|join:", " }}</span>
+        </div>
+      {% endif %}
+
+      <div class="form-group-wrapper investor-type-group">
+        <label class="section-title">Vous êtes :</label>
+        <div class="investor-type-selector">
+          <label class="type-option">
+            <input type="radio" name="investor_type" value="individual" {% if form.investor_type.value != "company" %}checked{% endif %} id="id_investor_type_0">
+            <span class="type-box">
+              <i class="ph ph-user"></i>
+              <strong>Personne physique</strong>
+              <small>Particulier, co-investisseur...</small>
+            </span>
+          </label>
+          <label class="type-option">
+            <input type="radio" name="investor_type" value="company" {% if form.investor_type.value == "company" %}checked{% endif %} id="id_investor_type_1">
+            <span class="type-box">
+              <i class="ph ph-buildings"></i>
+              <strong>Personne morale</strong>
+              <small>Société, SCI, Holding...</small>
+            </span>
+          </label>
+        </div>
+      </div>
+
+      <div class="form-group-wrapper">
+        <label class="section-title">Informations de contact</label>
+        <div class="form-grid-2">
+          <div class="field-container">
+            <label for="id_full_name">Nom complet (ou Représentant légal)</label>
+            {{ form.full_name }}
+            {{ form.full_name.errors }}
+          </div>
+          <div class="field-container">
+            <label for="id_phone">Téléphone</label>
+            {{ form.phone }}
+            {{ form.phone.errors }}
+          </div>
+        </div>
+      </div>
+
+      <!-- Individual-only fields -->
+      <div class="form-group-wrapper" id="individual-fields-group">
+        <label class="section-title">Informations de naissance</label>
+        <div class="form-grid-2">
+          <div class="field-container">
+            <label for="id_birth_date">Date de naissance</label>
+            {{ form.birth_date }}
+            {{ form.birth_date.errors }}
+          </div>
+          <div class="field-container">
+            <label for="id_nationality">Nationalité</label>
+            {{ form.nationality }}
+            {{ form.nationality.errors }}
+          </div>
+          <div class="field-container">
+            <label for="id_birth_place">Ville de naissance</label>
+            {{ form.birth_place }}
+            {{ form.birth_place.errors }}
+          </div>
+          <div class="field-container">
+            <label for="id_birth_country">Pays de naissance</label>
+            {{ form.birth_country }}
+            {{ form.birth_country.errors }}
+          </div>
+        </div>
+      </div>
+
+      <!-- Company-only fields -->
+      <div class="form-group-wrapper" id="company-fields-group" style="display: none;">
+        <label class="section-title">Informations de la société</label>
+        <div class="form-grid-2">
+          <div class="field-container">
+            <label for="id_company_name">Dénomination sociale (Nom)</label>
+            {{ form.company_name }}
+            {{ form.company_name.errors }}
+          </div>
+          <div class="field-container">
+            <label for="id_company_type">Forme juridique (SCI, SAS...)</label>
+            {{ form.company_type }}
+            {{ form.company_type.errors }}
+          </div>
+          <div class="field-container">
+            <label for="id_company_siret">Numéro SIRET / SIREN</label>
+            {{ form.company_siret }}
+            {{ form.company_siret.errors }}
+          </div>
+          <div class="field-container">
+            <label for="id_representative_role">Qualité du représentant (Gérant...)</label>
+            {{ form.representative_role }}
+            {{ form.representative_role.errors }}
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group-wrapper">
+        <label class="section-title">Adresse de résidence (ou Siège social)</label>
+        <div class="field-container">
+          <label for="id_address">Adresse</label>
+          {{ form.address }}
+          {{ form.address.errors }}
+        </div>
+        <div class="form-grid-3" style="margin-top: 14px;">
+          <div class="field-container">
+            <label for="id_postal_code">Code postal</label>
+            {{ form.postal_code }}
+            {{ form.postal_code.errors }}
+          </div>
+          <div class="field-container">
+            <label for="id_city">Ville</label>
+            {{ form.city }}
+            {{ form.city.errors }}
+          </div>
+          <div class="field-container">
+            <label for="id_country">Pays</label>
+            {{ form.country }}
+            {{ form.country.errors }}
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group-wrapper check-fields-group">
+        <div class="form-check">
+          {{ form.accepted_terms }}
+          <label class="form-check-label" for="id_accepted_terms">J'accepte la Politique de confidentialité ainsi que les CGU de La Première Brique.</label>
+          {{ form.accepted_terms.errors }}
+        </div>
+        <div class="form-check" style="margin-top: 12px;">
+          {{ form.accepted_risks }}
+          <label class="form-check-label" for="id_accepted_risks">Je comprends que tout investissement comporte un risque de perte en capital.</label>
+          {{ form.accepted_risks.errors }}
+        </div>
+      </div>
+
+      <button class="btn btn-primary" type="submit" style="margin-top: 24px;">Confirmer et continuer</button>
+    </form>
+  </section>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const individualGroup = document.getElementById("individual-fields-group");
+      const companyGroup = document.getElementById("company-fields-group");
+      const typeRadios = document.querySelectorAll('input[name="investor_type"]');
+
+      const toggleGroups = () => {
+        const selectedValue = document.querySelector('input[name="investor_type"]:checked')?.value;
+        if (selectedValue === "company") {
+          individualGroup.style.display = "none";
+          companyGroup.style.display = "block";
+        } else {
+          individualGroup.style.display = "block";
+          companyGroup.style.display = "none";
+        }
+      };
+
+      typeRadios.forEach(radio => radio.addEventListener("change", toggleGroups));
+      toggleGroups(); // Initial toggle
+    });
+  </script>
+{% endblock %}

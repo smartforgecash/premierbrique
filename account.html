@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Compte | Premier Brique</title>
+    <link rel="stylesheet" href="https://d1jdllyufjkaos.cloudfront.net/assets/application_rebranding-5ac5e978853338dcb353a79763af31aaa90139d5e96d1fa549e7095014d5a52a.css" media="all">
+    <link rel="stylesheet" href="css/auth.css">
+    {% include "analytics.html" %}
+  </head>
+  <body class="auth-body">
+    <main class="min-dvh-100 d-flex align-items-center justify-content-center px-4">
+      <section class="mw-112 text-center d-flex flex-column gap-4">
+        <h1 class="fs-1 fw-semibold mb-0">Votre compte</h1>
+        <p class="text-gray mb-0">{{ request.user.email|default:request.user.username }}</p>
+        <a class="btn btn-primary btn-with-arrow w-100" href="/">Retour au site</a>
+        <form action="/logout/" method="post">
+          {% csrf_token %}
+          <button class="btn btn-outline-dark w-100" type="submit">Déconnexion</button>
+        </form>
+      </section>
+    </main>
+  </body>
+</html>

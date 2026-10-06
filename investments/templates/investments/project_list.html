@@ -1,0 +1,146 @@
+{% extends "investments/base_app.html" %}
+{% block title %}Projets | Premier Brique{% endblock %}
+{% block nav_projects %}is-active{% endblock %}
+{% block mobile_nav_projects %}is-active{% endblock %}
+
+{% block content %}
+<div class="app-container">
+  {% if featured %}
+    <h1 class="screen-title">Projets à la une</h1>
+    <div class="lpb-project-grid" style="margin-bottom:88px">
+      {% for project in featured %}
+        <a href="{{ project.get_absolute_url }}" class="lpb-project-card">
+          <div class="lpb-card-media">
+            <span class="lpb-card-status">Collecte en cours</span>
+            <i class="ph ph-share-network share-floating"></i>
+            <img src="{{ project.cover_image_url }}" alt="{{ project.title }}">
+            <div class="type-strip {% if project.operator_type == 'Locatif' %}locatif{% endif %}">
+              <i class="ph ph-package"></i> {{ project.operator_type }}
+            </div>
+          </div>
+          <div class="lpb-card-body">
+            <h2>{{ project.title }}</h2>
+            <div class="project-place"><i class="ph ph-map-pin"></i>{{ project.location }}</div>
+            <div class="money-line">
+              {{ project.raised_amount|floatformat:"0" }} €
+              <small>/ {{ project.target_amount|floatformat:"0" }} €</small>
+            </div>
+            <div class="progress-line">
+              <div class="progress-track">
+                <div class="progress-bar {% if project.operator_type == 'Locatif' %}locatif{% endif %}" style="width:{{ project.progress_percent }}%"></div>
+              </div>
+              <span>{{ project.progress_percent }}%</span>
+            </div>
+            <div class="project-facts">
+              <div><i class="ph ph-trend-up"></i><strong>{{ project.annual_return }}% / an</strong> sur {{ project.duration_months }} mois</div>
+              <div><i class="ph ph-user"></i><strong>{{ project.investors_count }}</strong> briqueurs ont investi</div>
+            </div>
+          </div>
+        </a>
+      {% endfor %}
+    </div>
+  {% endif %}
+
+  <div class="projects-toolbar">
+    <h1 class="screen-title" style="margin:0">Projets passés</h1>
+    <div style="display:flex;gap:16px;align-items:center;flex-wrap:wrap">
+      <div class="filter-tabs">
+        <button class="active" type="button" data-filter="all">Tous</button>
+        <button type="button" data-filter="funded">Financé</button>
+        <button type="button" data-filter="closed">Terminé</button>
+      </div>
+      <div class="search-box">
+        <i class="ph ph-magnifying-glass"></i>
+        <input class="project-search" type="search" placeholder="Nom ou département..." id="projectSearch">
+      </div>
+    </div>
+  </div>
+
+  <div class="lpb-project-grid" id="pastGrid">
+    {% for project in past %}
+      <a href="{{ project.get_absolute_url }}" class="lpb-project-card is-past {% if project.status == 'funded' %}is-funded{% endif %}" data-status="{{ project.status }}" data-search="{{ project.title|lower }} {{ project.location|lower }}">
+        <div class="lpb-card-media">
+          {% if project.status == "funded" %}
+            <span class="lpb-card-status">Financé le 16 juin 2026</span>
+          {% else %}
+            <span class="lpb-card-status">Clôturé le 18 juin 2026</span>
+          {% endif %}
+          <i class="ph ph-share-network share-floating"></i>
+          <img src="{{ project.cover_image_url }}" alt="{{ project.title }}">
+          <div class="type-strip {% if project.operator_type == 'Locatif' %}locatif{% endif %}">
+            <i class="ph ph-package"></i> {{ project.operator_type }}
+          </div>
+        </div>
+        <div class="lpb-card-body">
+          <h2>{{ project.title }}</h2>
+          <div class="project-place"><i class="ph ph-map-pin"></i>{{ project.location }}</div>
+          <div class="money-line">
+            {{ project.raised_amount|floatformat:"0" }} €
+            <small>/ {{ project.target_amount|floatformat:"0" }} €</small>
+          </div>
+          <div class="progress-line">
+            <div class="progress-track">
+              <div class="progress-bar {% if project.operator_type == 'Locatif' %}locatif{% endif %}" style="width:{{ project.progress_percent }}%"></div>
+            </div>
+            <span>{{ project.progress_percent }}%</span>
+          </div>
+          <div class="project-facts">
+            <div><i class="ph ph-trend-up"></i><strong>{{ project.annual_return }}% / an</strong> sur {{ project.duration_months }} mois</div>
+            <div><i class="ph ph-user"></i><strong>{{ project.investors_count }}</strong> briqueurs ont investi</div>
+          </div>
+        </div>
+      </a>
+    {% endfor %}
+  </div>
+
+  {% if past_page.paginator.num_pages > 1 %}
+    <nav class="pagination-row" aria-label="Pages des projets passés">
+      {% if past_page.has_previous %}<a class="page-num" href="?page={{ past_page.previous_page_number }}" aria-label="Page précédente"><i class="ph ph-caret-left"></i></a>{% else %}<span class="page-num disabled"><i class="ph ph-caret-left"></i></span>{% endif %}
+      {% for page in page_range %}
+        {% if page == past_page.paginator.ELLIPSIS %}<span class="page-num">…</span>{% elif page == past_page.number %}<span class="page-num active">{{ page }}</span>{% else %}<a class="page-num" href="?page={{ page }}">{{ page }}</a>{% endif %}
+      {% endfor %}
+      {% if past_page.has_next %}<a class="page-num" href="?page={{ past_page.next_page_number }}" aria-label="Page suivante"><i class="ph ph-caret-right"></i></a>{% else %}<span class="page-num disabled"><i class="ph ph-caret-right"></i></span>{% endif %}
+    </nav>
+  {% endif %}
+
+  <section class="projects-help">
+    <h2>Besoin d'aide ?</h2>
+    <p>Trouvez des réponses ou échangez directement avec notre équipe.</p>
+    <button class="outline-btn help-disabled" type="button" aria-disabled="true">Obtenir de l'aide</button>
+    <div class="risk-notice">
+      <p><strong>AVERTISSEMENT :</strong> Investir présente des risques, dont celui de perte totale ou partielle des sommes investies et d'illiquidité. De plus, les performances passées ne préjugent pas des performances futures. Si vous avez la moindre question sur les risques associés à nos projets, contactez-nous.</p>
+    </div>
+  </section>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  const cards = Array.from(document.querySelectorAll("#pastGrid .lpb-project-card"));
+  const tabs = Array.from(document.querySelectorAll(".filter-tabs button"));
+  const search = document.getElementById("projectSearch");
+  let activeFilter = "all";
+
+  function drawProjects() {
+    const query = (search.value || "").trim().toLowerCase();
+    const filtered = cards.filter((card) => {
+      const status = card.dataset.status;
+      if (activeFilter !== "all" && status !== activeFilter) return false;
+      return !query || card.dataset.search.includes(query);
+    });
+    cards.forEach((card) => card.style.display = "none");
+    filtered.forEach((card) => card.style.display = "block");
+  }
+
+  tabs.forEach((tab) => tab.addEventListener("click", () => {
+    tabs.forEach((item) => item.classList.remove("active"));
+    tab.classList.add("active");
+    activeFilter = tab.dataset.filter;
+    drawProjects();
+  }));
+  search.addEventListener("input", () => {
+    drawProjects();
+  });
+  drawProjects();
+</script>
+{% endblock %}

@@ -1,0 +1,26 @@
+# Secrets and local state must never enter the image.
+.env
+.env.*
+!.env.example
+env.yaml
+db.sqlite3
+db.sqlite3-journal
+
+.git
+.gitignore
+.venv
+venv/
+__pycache__/
+*.py[cod]
+*.log
+
+# Rebuilt during the image build.
+staticfiles/
+
+.agents
+.codex
+.vercel/
+.idea/
+.vscode/
+Thumbs.db
+Desktop.ini

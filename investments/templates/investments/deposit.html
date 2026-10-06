@@ -1,0 +1,27 @@
+{% extends "investments/base_app.html" %}
+{% load money %}
+{% block title %}Paiement | Premier Brique{% endblock %}
+{% block content %}
+  <section class="form-card">
+    <a class="back-link" href="{% url 'deposit_method' %}"><i class="ph ph-arrow-left"></i> Modes de paiement</a>
+    <div class="eyebrow">Paiement sécurisé par Mollie</div>
+    <h1>Recharger mon solde</h1>
+    <p class="muted">Solde actuel : <strong>{{ balance|euro }}</strong></p>
+    {% if payment_method == "banktransfer" %}
+      <p class="muted">Mollie vous fournira les coordonnées et la référence du virement SEPA. Le solde sera crédité automatiquement après réception.</p>
+    {% else %}
+      <p class="muted">Le paiement par carte Visa ou Mastercard est traité sur la page sécurisée de Mollie.</p>
+    {% endif %}
+    <form method="post">
+      {% csrf_token %}
+      <input type="hidden" name="payment_method" value="{{ payment_method }}">
+      {{ form.as_p }}
+      <button class="btn btn-primary" type="submit" {% if not mollie_available %}disabled{% endif %}>
+        {% if payment_method == "banktransfer" %}Continuer vers le virement bancaire{% else %}Payer par carte bancaire{% endif %}
+      </button>
+    </form>
+    {% if not mollie_available %}
+      <p class="muted">Mollie n'est pas encore activé sur ce serveur.</p>
+    {% endif %}
+  </section>
+{% endblock %}

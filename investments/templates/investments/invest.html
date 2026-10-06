@@ -1,0 +1,15 @@
+{% extends "investments/base_app.html" %}
+{% load money %}
+{% block title %}Investir | {{ project.title }}{% endblock %}
+{% block content %}
+  <section class="form-card">
+    <div class="eyebrow">Souscription</div>
+    <h1>Investir dans {{ project.title }}</h1>
+    <p class="muted">Solde disponible : <strong>{{ balance|euro }}</strong></p>
+    <form method="post">
+      {% csrf_token %}
+      {{ form.as_p }}
+      <button class="btn btn-primary" type="submit">Confirmer l'investissement</button>
+    </form>
+  </section>
+{% endblock %}

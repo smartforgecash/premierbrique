@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+{% load money %}
+<html lang="fr-FR">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}Premier Brique{% endblock %}</title>
+    <link rel="icon" type="image/svg+xml" sizes="any" href="/css/favicon.svg">
+    <meta name="theme-color" content="#A42515">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <script src="https://ajax.googleapis.com/ajax/libs/webfont/1.6.26/webfont.js"></script>
+    <script>WebFont.load({ google: { families: ["Manrope:300,400,500,600,700,800"] } });</script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.2/src/regular/style.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.1/src/fill/style.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.1/src/bold/style.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.1/src/thin/style.min.css">
+    <link rel="stylesheet" href="/css/app.css">
+    {% block extra_head %}{% endblock %}
+    {% include "analytics.html" %}
+  </head>
+  <body class="pb-app-body">
+    <header class="app-topbar">
+      <div class="app-topbar-inner">
+        <a class="app-brand" href="{% if request.user.is_authenticated %}/account/{% else %}/{% endif %}" aria-label="Accueil Premier Brique">
+          <span class="brand-mark" aria-hidden="true">
+            <svg viewBox="0 0 25 25" fill="none">
+              <path d="M0 9.02C0 8.51.25 8.03.67 7.74L11.53.27a1.55 1.55 0 0 1 1.76 0l10.85 7.47c.43.29.68.77.68 1.28v1.83c0 .86-.7 1.55-1.55 1.55H1.55C.69 12.4 0 11.7 0 10.85V9.02Z" fill="currentColor"/>
+              <path d="M14.89 19.85a4.96 4.96 0 1 1 9.93 0 4.96 4.96 0 0 1-9.93 0Z" fill="currentColor"/>
+              <path d="M0 17.06c0-.86.69-1.55 1.55-1.55h9.31c.85 0 1.55.69 1.55 1.55v6.2c0 .87-.7 1.56-1.55 1.56H1.55C.69 24.82 0 24.12 0 23.27v-6.21Z" fill="currentColor"/>
+            </svg>
+          </span>
+          <span class="brand-text">la première brique</span>
+        </a>
+
+        <nav class="app-nav" aria-label="Navigation investisseur">
+          <a class="app-nav-item {% block nav_dashboard %}{% endblock %}" href="/account/">
+            <i class="ph ph-cube"></i>
+            <span>Tableau de bord</span>
+          </a>
+          <a class="app-nav-item {% block nav_projects %}{% endblock %}" href="/projects.html">
+            <i class="ph ph-buildings"></i>
+            <span>Projets</span>
+          </a>
+          <a class="app-nav-item {% block nav_investments %}{% endblock %}" href="/investments/">
+            <i class="ph ph-trend-up"></i>
+            <span>Investissements</span>
+          </a>
+        </nav>
+
+        <div class="app-actions">
+          {% if request.user.is_authenticated %}
+            <a class="top-add" href="/wallet/deposit/method/" aria-label="Alimenter le solde">
+              <i class="ph ph-plus"></i>
+            </a>
+            <a class="balance-pill" href="/wallet/">
+              <small>Solde</small>
+              <strong>{{ balance|euro }}</strong>
+            </a>
+            <button class="icon-ghost" type="button" aria-label="Notifications">
+              <i class="ph ph-bell"></i>
+              <span class="notification-badge">4</span>
+            </button>
+            <a class="top-logout" href="/logout/">Déconnexion</a>
+            <div class="account-menu">
+              <button class="avatar-pill" type="button" aria-label="Menu du compte">
+                {% with initials=request.user.investorprofile.initials %}
+                  <span>{% if initials %}{{ initials }}{% else %}{{ request.user.email|default:request.user.username|first|upper }}{% endif %}</span>
+                {% endwith %}
+              </button>
+              <div class="account-dropdown">
+                <button class="account-back" type="button" aria-label="Fermer le menu du compte">
+                  <i class="ph ph-arrow-left"></i>
+                </button>
+                <div class="account-head">
+                  <span class="account-head-avatar">
+                    {% with initials=request.user.investorprofile.initials %}{% if initials %}{{ initials }}{% else %}{{ request.user.email|default:request.user.username|first|upper }}{% endif %}{% endwith %}
+                  </span>
+                  <span class="account-head-copy">
+                    <strong>{{ request.user.investorprofile.full_name|default:request.user.get_full_name|default:request.user.email|default:request.user.username }}</strong>
+                    <span>Personne physique</span>
+                  </span>
+                </div>
+                <div class="group-strip">Vous êtes <strong>Groupe 1</strong> <i class="ph ph-info"></i></div>
+                <a href="/onboarding/profile/"><i class="ph ph-user"></i> Mes informations personnelles <span class="dot"></span></a>
+                <a href="/wallet/"><i class="ph ph-credit-card"></i> Mes moyens de paiement</a>
+                <a href="/investments/"><i class="ph ph-calendar-dots"></i> Mes jimbots</a>
+                <a href="#"><i class="ph ph-users-three"></i> Mes parrainages</a>
+                <a href="/onboarding/identity/"><i class="ph ph-identification-card"></i> Mes documents <span class="dot"></span></a>
+                <a href="/onboarding/questionnaire/"><i class="ph ph-list-checks"></i> Mon questionnaire <span class="dot"></span></a>
+                <a class="separated" href="#"><i class="ph ph-gear-six"></i> Paramètres</a>
+                <a href="#"><i class="ph ph-question"></i> Aide et support</a>
+                <a class="logout-link" href="/logout/">Déconnexion</a>
+              </div>
+            </div>
+          {% else %}
+            <a class="public-account-btn" href="/login.html">Compte</a>
+          {% endif %}
+        </div>
+      </div>
+    </header>
+
+    <nav class="mobile-bottom-nav" aria-label="Navigation mobile">
+      <a class="{% block mobile_nav_dashboard %}{% endblock %}" href="/account/">
+        <span class="mobile-nav-icon"><i class="ph ph-cube nav-icon-outline"></i><i class="ph-fill ph-cube nav-icon-fill"></i></span>
+        <span>Tableau de bord</span>
+      </a>
+      <a class="{% block mobile_nav_projects %}{% endblock %}" href="/projects.html">
+        <span class="mobile-nav-icon"><i class="ph ph-buildings nav-icon-outline"></i><i class="ph-fill ph-buildings nav-icon-fill"></i></span>
+        <span>Projets</span>
+      </a>
+      <a class="{% block mobile_nav_investments %}{% endblock %}" href="/investments/">
+        <span class="mobile-nav-icon"><i class="ph ph-trend-up nav-icon-outline"></i><i class="ph-fill ph-trend-up nav-icon-fill"></i></span>
+        <span>Investissements</span>
+      </a>
+    </nav>
+
+    <main class="app-main">
+      {% if messages %}
+        <div class="app-container messages-container" id="alertContainer">
+          {% for message in messages %}
+            {% if 'success' in message.tags %}
+              <div class="alert-box alert-success"><i class="ph ph-check-circle"></i><span>{{ message }}</span></div>
+            {% elif 'error' in message.tags or 'danger' in message.tags %}
+              <div class="alert-box alert-error"><i class="ph ph-warning"></i><span>{{ message }}</span></div>
+            {% elif 'warning' in message.tags %}
+              <div class="alert-box alert-warning"><i class="ph ph-warning-circle"></i><span>{{ message }}</span></div>
+            {% else %}
+              <div class="alert-box alert-info"><i class="ph ph-clock"></i><span>{{ message }}</span></div>
+            {% endif %}
+          {% endfor %}
+        </div>
+      {% endif %}
+      {% block content %}{% endblock %}
+    </main>
+
+    <script>
+      (() => {
+        const menu = document.querySelector('.account-menu');
+        if (!menu) return;
+        const trigger = menu.querySelector('.avatar-pill');
+        const back = menu.querySelector('.account-back');
+        const closeMenu = () => {
+          menu.classList.remove('is-open');
+          document.body.classList.remove('account-menu-open');
+          trigger.setAttribute('aria-expanded', 'false');
+        };
+        trigger.setAttribute('aria-expanded', 'false');
+        trigger.addEventListener('click', (event) => {
+          if (!window.matchMedia('(max-width: 720px)').matches) return;
+          event.preventDefault();
+          const opening = !menu.classList.contains('is-open');
+          menu.classList.toggle('is-open', opening);
+          document.body.classList.toggle('account-menu-open', opening);
+          trigger.setAttribute('aria-expanded', String(opening));
+        });
+        back?.addEventListener('click', closeMenu);
+        document.addEventListener('keydown', (event) => {
+          if (event.key === 'Escape') closeMenu();
+        });
+        document.querySelectorAll('.balance-pill strong').forEach((amount) => {
+          const length = amount.textContent.trim().length;
+          if (length >= 10) amount.classList.add('is-long');
+          else if (length >= 8) amount.classList.add('is-medium');
+        });
+      })();
+    </script>
+
+    {% block extra_js %}{% endblock %}
+  </body>
+</html>

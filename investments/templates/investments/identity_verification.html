@@ -1,0 +1,15 @@
+{% extends "investments/base_app.html" %}
+{% block title %}Vérification d'identité | Premier Brique{% endblock %}
+{% block content %}
+<section class="form-card">
+  <div class="eyebrow">Étape 3 sur 4</div>
+  <h1>Vérifiez votre identité</h1>
+  <p class="muted">Ajoutez une photo nette du recto et du verso dans un même PDF, ou la page d'identité de votre passeport.</p>
+  {% if profile.has_identity_document %}<div class="document-sent"><i class="ph ph-check-circle"></i> Document transmis : {{ profile.identity_document_name }}</div>{% endif %}
+  <form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button class="btn btn-primary" type="submit">Transmettre et continuer</button>
+  </form>
+</section>
+{% endblock %}

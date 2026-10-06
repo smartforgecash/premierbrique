@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta name="csrf-param" content="authenticity_token" />
+<meta name="csrf-token" content="GgRWp13OSq-GPw9XXpU8hyyq_-VVmBlwA-2B4j4ovfkVo4BobqItlNcsV5C4AzBpNZP9IqQMmTAWq02RsjBOGA" />
+    <meta name="csp-nonce" />
+    <meta name="action-cable-url" content="/cable" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+      <meta name="robots" content="index, follow">
+
+<title>La Première Brique | Investir dans le crowdfunding immobilier dès 1€</title>
+<meta name="description"          content="Investir de façon innovante avec La Première Brique dans des projets de crowdfunding immobiliers français à hauts rendements et sans aucuns frais !">
+
+<meta property="og:title"         content="La Première Brique | Investir dans le crowdfunding immobilier dès 1€">
+<meta property="og:description"   content="Investir de façon innovante avec La Première Brique dans des projets de crowdfunding immobiliers français à hauts rendements et sans aucuns frais !">
+<meta property="og:url"           content="#/fr/users/sign_up">
+<meta property="og:type"          content="website">
+<meta property="og:site_name"     content="La Première Brique">
+<meta property="og:image"         content="#/images/rebranding/og-image.png">
+
+<link rel="icon" type="image/svg+xml" sizes="any" href="/css/favicon.svg">
+<meta name="theme-color" content="#A42515">
+<meta name="theme-color" content="#ffffff">
+
+
+      <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+  new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+  j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+  'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+  })(window,document,'script','dataLayer', 'GTM-M7FSFSM');
+</script>
+
+
+    <script>
+      $locale = 'fr';
+    </script>
+
+    <link rel="stylesheet" href="https://d1jdllyufjkaos.cloudfront.net/assets/application_rebranding-5ac5e978853338dcb353a79763af31aaa90139d5e96d1fa549e7095014d5a52a.css" media="all" />
+    
+
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.2/src/regular/style.min.css"
+    >
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.1/src/fill/style.min.css"
+    >
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.1/src/bold/style.min.css"
+    >
+
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.1/src/thin/style.min.css"
+    >
+    <script src="https://d1jdllyufjkaos.cloudfront.net/assets/application-9d3aaeacd84bf3d6ebfadc345ddf44ea30452f262d34cb01912bf7e222a467f1.js"></script>
+  
+<!-- Local CSS Enhancements -->
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/auth.css">
+{% include "analytics.html" %}
+</head>
+
+  <body data-controller="modal-portal">
+      <noscript>
+  <iframe src="https://www.googletagmanager.com/ns.html?id=GTM-M7FSFSM"
+          height="0"
+          width="0"
+          style="display:none;visibility:hidden"></iframe>
+</noscript>
+
+
+
+
+
+      <div class="row mx-0 position-relative small fw-medium cms-banner z-1 d-none bg-tertiary-100 text-tertiary-800" data-controller="banner" data-banner-signature-value="ab2f65973abfb66350e54e9f79434bccd18d81df7cbe5bd3ec0bd47ff1b22671">
+    <div class="col m-0 text-center py-5 px-12 d-flex flex-column flex-lg-row align-items-lg-center justify-content-center"><p>💊 Disponible sans ordonnance : 1% de cashback sur L'Officine : code <b>loc</b><strong>2</strong> → <a href="projects.html">Voir le projet</a>﻿</p></div>
+    <button type="button" class="btn-close px-4 h-100 py-0 position-absolute top-0 end-0 z-2" aria-label="Fermer" data-action="click-&gt;banner#hide"></button>
+</div>
+
+    <div class="position-relative">
+          <div class="bg-white min-dvh-100 dvh-100">
+  <div class="container-fluid container-3xl h-100">
+    <div class="d-flex align-items-center h-lg-100">
+      <div class="col-12 col-lg-6 py-4">
+        <div class="mw-112 mx-auto py-6 py-lg-12 d-flex flex-column justify-content-center align-items-center gap-6 h-100">
+            <img width="48" height="48" alt="Logo simplifié de La Première Brique" aria-hidden="true" src="https://d1jdllyufjkaos.cloudfront.net/assets/rebranding/logos/mini_logo-a44a97f8780002e7bb63aba8213e3d0081dfc9e73e23815536ec07782bfb9646.svg" />
+
+          <h1 class="text-center">Bienvenue sur <br>La Première Brique !</h1>
+          
+    <div data-controller="omniauth-links" class="col-12">
+  <div
+    class="d-flex flex-wrap gap-2"
+    data-omniauth-links-target="browserLinksContainer"
+  >
+    <div class="col-12">
+      <form method="post" action="{% url 'social:begin' 'google-oauth2' %}">
+        {% csrf_token %}
+      <button class="btn btn-outline-dark d-flex align-items-center justify-content-center gap-2 w-100" type="submit">
+        <img width="20" height="20" alt="" aria-hidden="true" src="https://d1jdllyufjkaos.cloudfront.net/assets/icons/google_logo-db38f8ae08f41c6cd641be7ac6ddf70841613936d35f863a19a5de2f248d9e7c.svg" />
+        Continuer avec Google
+      </button>
+      </form>
+    </div>
+  </div>
+
+  <div
+    class="d-flex flex-wrap gap-2"
+    data-omniauth-links-target="appLinksContainer"
+  >
+    <div class="col-12">
+      <button class="btn btn-outline-dark d-flex align-items-center justify-content-center gap-2 w-100" onclick="Median.socialLogin.google.login({ &#39;redirectUri&#39; : &#39;#/fr/users/auth/app_google/callback&#39;, &#39;scope&#39; : &#39;openid, profile, email&#39;, &#39;state&#39; : &#39;&#39; });" data-omniauth-links-target="googleConnectButton">
+        <img width="20" height="20" alt="" aria-hidden="true" src="https://d1jdllyufjkaos.cloudfront.net/assets/icons/google_logo-db38f8ae08f41c6cd641be7ac6ddf70841613936d35f863a19a5de2f248d9e7c.svg" />
+        Continuer avec Google
+</button>    </div>
+
+    <div class="col-12">
+      <button
+        data-action="click->biometric-auth#authenticateWithSavedTokens"
+        data-biometric-auth-target="biometricLoginButton"
+        class="btn btn-outline-dark d-flex align-items-center justify-content-center gap-2 w-100 d-none"
+      >
+        Se connecter avec la biométrie
+      </button>
+    </div>
+  </div>
+</div>
+
+<div class="col-12 d-flex align-items-center">
+  <div class="flex-fill border-top border-gray-100"></div>
+  <div class="px-4 text-gray text-xs">
+    ou
+  </div>
+  <div class="flex-fill border-top border-gray-100"></div>
+</div>
+
+
+
+    <div class="col-12 d-flex flex-column gap-3">
+      <a class="btn btn-primary btn-with-arrow w-100" href="signup-email.html">Continuer avec une adresse email</a>
+
+      <p class="text-gray text-sm text-center fw-medium">
+        Déjà un compte ?
+        <a class="link-primary fw-semibold text-decoration-none" href="login.html">Se connecter</a>
+      </p>
+    </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="d-none d-lg-block col-lg-6 position-fixed top-0 end-0 h-100 devise-bg"></div>
+</div>
+
+
+
+      <div id="popup-container">
+      </div>
+    </div>
+
+    
+
+    
+      <script src="https://d1jdllyufjkaos.cloudfront.net/assets/omniauth_links-3a3830ba35fd9d228aa475d4ee5c51858e2426bf696a8811aa9aa6c7f4ada588.js"></script>
+
+
+    <div
+  class="modal modal-offcanvas fade"
+  id="helpAndSupportModal"
+  tabindex="-1"
+  aria-labelledby="helpAndSupportModalLabel"
+  aria-hidden="true"
+  data-modal-portal-target="modal"
+>
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <p class="modal-title fs-2 fw-semibold" id="helpAndSupportModalLabel">
+          Aide et support
+        </p>
+
+        <button type="button" id="closeHelpAndSupportModalButton" class="btn-close ms-auto" data-bs-dismiss="modal" aria-label="Fermer"></button>
+      </div>
+
+      <div class="modal-body">
+        <a class="text-decoration-none text-dark" href="#">
+          <div class="d-flex align-items-center justify-content-between gap-4 py-4">
+            <div class="d-flex align-items-center gap-2">
+              <div class="w-12 h-12 bg-light rounded-circle d-flex align-items-center justify-content-center col-auto">
+                <i class="ph ph-lifebuoy fs-3 text-quaternary-800" role="img" aria-hidden="true"></i>
+              </div>
+
+              <div>
+                <p class="mb-0 text-sm fw-medium">Centre d’aide</p>
+                <span class="text-xs text-gray">Consultez nos guides et FAQ pour trouver vos réponses rapidement.</span>
+              </div>
+            </div>
+
+            <i class="ph ph-caret-right fs-3 text-quaternary-800" role="img" aria-hidden="true"></i>
+          </div>
+</a>
+        <button class="btn btn-link text-left p-0 text-decoration-none text-dark w-100" onclick="document.getElementById(&#39;closeHelpAndSupportModalButton&#39;).click(); $crisp.push([&#39;do&#39;, &#39;chat:open&#39;]);">
+          <div class="d-flex align-items-center justify-content-between gap-4 py-4">
+            <div class="d-flex align-items-center gap-2">
+              <div class="w-12 h-12 bg-light rounded-circle d-flex align-items-center justify-content-center col-auto">
+                <i class="ph ph-chat-circle-dots fs-3 text-quaternary-800" role="img" aria-hidden="true"></i>
+              </div>
+
+              <div>
+                <p class="mb-0 text-sm fw-medium">Chat en direct</p>
+                <span class="text-xs text-gray">Discutez en direct avec notre équipe ou laissez-nous un message.</span>
+              </div>
+            </div>
+
+            <i class="ph ph-caret-right fs-3 text-quaternary-800" role="img" aria-hidden="true"></i>
+          </div>
+</button>      </div>
+    </div>
+  </div>
+</div>
+
+    
+  <script defer src="https://static.cloudflareinsights.com/beacon.min.js/v833ccba57c9e4d2798f2e76cebdd09a11778172276447" integrity="sha512-57MDmcccJXYtNnH+ZiBwzC4jb2rvgVCEokYN+L/nLlmO8rfYT/gIpW2A569iJ/3b+0UEasghjuZH/ma3wIs/EQ==" data-cf-beacon='{"version":"2024.11.0","token":"aad5be1e5605441ea09791f4a6430a4e","r":1,"server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
+
+<!-- Local JS Enhancements -->
+<script src="js/auth.js"></script>
+</body>
+</html>

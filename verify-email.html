@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Vérification email | Premier Brique</title>
+    <link rel="stylesheet" href="https://d1jdllyufjkaos.cloudfront.net/assets/application_rebranding-5ac5e978853338dcb353a79763af31aaa90139d5e96d1fa549e7095014d5a52a.css" media="all">
+    <link rel="stylesheet" href="/css/auth.css">
+    <style>
+      .letter-spacing-code {
+        letter-spacing: 0.25em;
+        font-weight: 700;
+      }
+    </style>
+    {% include "analytics.html" %}
+  </head>
+  <body class="auth-body">
+    <div class="position-relative">
+      <div class="container">
+        <div class="dvh-100 d-flex flex-column align-items-center justify-content-between justify-content-lg-start gap-8 col-12 col-lg-5 col-xl-4 mx-auto pt-6 pb-8 pt-lg-12">
+          
+          <div class="d-flex flex-column align-items-center gap-6">
+            <img width="48" height="48" alt="Logo de La Première Brique" aria-hidden="true" src="https://d1jdllyufjkaos.cloudfront.net/assets/rebranding/logos/mini_logo-a44a97f8780002e7bb63aba8213e3d0081dfc9e73e23815536ec07782bfb9646.svg" />
+            <h1 class="text-center mb-0">Vérifiez votre email</h1>
+            <p class="text-gray text-center mb-0">Saisissez le code à 6 chiffres envoyé à <strong class="text-dark">{{ request.user.email }}</strong>.</p>
+          </div>
+
+          <div class="w-100 d-flex flex-column gap-6">
+            {% if messages %}
+              <div class="w-100">
+                {% for message in messages %}
+                  <div class="alert alert-{% if message.tags == 'error' %}danger{% else %}{{ message.tags|default:'info' }}{% endif %} py-3 px-4">{{ message }}</div>
+                {% endfor %}
+              </div>
+            {% endif %}
+
+            <form method="post" class="d-flex flex-column gap-4 w-100">
+              {% csrf_token %}
+              <div class="w-100">
+                <label class="form-label" for="verification_code">Code de vérification</label>
+                <input class="form-control text-center fs-4 letter-spacing-code" autocomplete="one-time-code" inputmode="numeric" maxlength="6" required placeholder="000000" type="text" name="code" id="verification_code">
+              </div>
+              <button class="btn btn-primary btn-with-arrow w-100" type="submit">Vérifier</button>
+            </form>
+
+            <p class="text-gray text-sm text-center fw-medium">
+              Vous n'avez pas reçu le code ?
+              <a class="link-primary fw-semibold text-decoration-none" href="/verify-email/resend/">Renvoyer le code</a>
+            </p>
+          </div>
+
+        </div>
+      </div>
+    </div>
+    <script src="/js/auth.js"></script>
+  </body>
+</html>

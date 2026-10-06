@@ -1,0 +1,103 @@
+{% extends "investments/base_app.html" %}
+{% block title %}Virement classique | Premier Brique{% endblock %}
+{% block content %}
+<section class="form-card bank-details-card">
+  <a class="back-link" href="/wallet/deposit/method/"><i class="ph ph-arrow-left"></i> Modes de paiement</a>
+  <div class="eyebrow">Virement classique</div>
+  <h1>Coordonnées de virement</h1>
+  {% if manual_bank_transfer %}
+    <p class="muted">Effectuez un virement bancaire standard (SEPA) vers les coordonnées ci-dessous, puis déclarez le montant. Votre solde sera crédité après validation par notre équipe.</p>
+  {% else %}
+    <p class="muted">Effectuez un virement bancaire standard (SEPA) depuis votre banque vers les coordonnées ci-dessous, puis déclarez le montant. Votre solde sera crédité automatiquement après réception du paiement par Stripe.</p>
+  {% endif %}
+
+  {% if error %}
+    <div class="alert-box alert-error">
+      <i class="ph ph-warning"></i>
+      <span>{{ error }}</span>
+    </div>
+  {% endif %}
+
+  {% if profile.iban %}
+    <div class="bank-info-grid">
+      <div class="bank-info-item">
+        <label>Titulaire du compte</label>
+        <div class="bank-info-value-row">
+          <span class="bank-info-value">{{ bank_account_holder_name }}</span>
+          <button class="copy-btn" onclick="copyText('{{ bank_account_holder_name|escapejs }}', this)"><i class="ph ph-copy"></i></button>
+        </div>
+      </div>
+
+      <div class="bank-info-item">
+        <label>{% if manual_bank_transfer %}IBAN{% else %}IBAN (Banque partenaire Stripe){% endif %}</label>
+        <div class="bank-info-value-row">
+          <span class="bank-info-value iban-value">{{ profile.iban }}</span>
+          <button class="copy-btn" onclick="copyText('{{ profile.iban|escapejs }}', this)"><i class="ph ph-copy"></i></button>
+        </div>
+      </div>
+
+      <div class="bank-info-item">
+        <label>Code BIC / SWIFT</label>
+        <div class="bank-info-value-row">
+          <span class="bank-info-value">{{ profile.bic }}</span>
+          <button class="copy-btn" onclick="copyText('{{ profile.bic|escapejs }}', this)"><i class="ph ph-copy"></i></button>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="bank-transfer-note" style="margin-top: 20px;">
+      <i class="ph ph-info"></i>
+      <span>{% if manual_bank_transfer %}Une fois votre virement effectué, déclarez le montant ci-dessous. Votre solde sera crédité après validation par notre équipe.{% else %}Ce numéro d'IBAN vous est personnellement attribué. Une fois votre virement effectué, déclarez le montant ci-dessous. Votre solde sera crédité après confirmation de réception par Stripe.{% endif %}</span>
+    </div>
+
+    <!-- The declared amount remains pending until it can be validated. -->
+    <div class="declare-transfer-section" style="margin-top: 32px; padding: 24px; background: #f8fafc; border-radius: 14px; border: 1.5px solid #e5e7eb;">
+      <h2 style="font-size: 1.05rem; margin-bottom: 6px; color: #101010;">J'ai effectué mon virement</h2>
+      <p style="color: #6b7280; font-size: 0.9rem; margin-bottom: 16px;">Entrez le montant que vous avez viré. Il restera en attente jusqu'{% if manual_bank_transfer %}à validation{% else %}'à confirmation Stripe{% endif %}.</p>
+      <form method="post" style="display: flex; gap: 12px; align-items: flex-end; flex-wrap: wrap;">
+        {% csrf_token %}
+        <input type="hidden" name="action" value="credit">
+        <div style="flex: 1; min-width: 160px;">
+          <label style="font-size: 0.82rem; font-weight: 600; color: #374151; display: block; margin-bottom: 4px;">Montant viré (€)</label>
+          <input
+            type="number"
+            name="declared_amount"
+            min="1"
+            step="0.01"
+            placeholder="Ex : 500"
+            required
+            style="width: 100%; padding: 10px 14px; border: 1.5px solid #d1d5db; border-radius: 10px; font-size: 1rem; outline: none;"
+          >
+        </div>
+        <button class="cta-red" type="submit" style="padding: 10px 22px; white-space: nowrap;">
+          <i class="ph ph-clock"></i> Déclarer le virement
+        </button>
+      </form>
+    </div>
+  {% else %}
+    <form method="post" name="action" class="generate-iban-form" style="margin-top: 24px; text-align: center;">
+      {% csrf_token %}
+      <input type="hidden" name="action" value="generate">
+      <p style="margin-bottom: 24px; color: #4b5563; line-height: 1.6;">{% if manual_bank_transfer %}Cliquez ci-dessous pour afficher les coordonnées bancaires de virement.{% else %}Afin de générer vos coordonnées bancaires SEPA personnelles auprès de notre partenaire de paiement Stripe, veuillez cliquer sur le bouton ci-dessous.{% endif %}</p>
+      <button class="btn btn-primary" type="submit" style="width: auto; min-width: 200px; display: inline-flex; align-items: center; justify-content: center; gap: 8px;">
+        <i class="ph ph-lightning"></i> {% if manual_bank_transfer %}Afficher les coordonnées de virement{% else %}Générer mon IBAN de virement{% endif %}
+      </button>
+    </form>
+  {% endif %}
+</section>
+
+<script>
+function copyText(text, btn) {
+  navigator.clipboard.writeText(text).then(() => {
+    const icon = btn.querySelector('i');
+    icon.className = 'ph ph-check';
+    btn.style.color = '#22c55e';
+    setTimeout(() => {
+      icon.className = 'ph ph-copy';
+      btn.style.color = '';
+    }, 1800);
+  });
+}
+</script>
+{% endblock %}

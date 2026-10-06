@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="fr-FR">
+<head>
+<meta charset="utf-8"/>
+<title>Projets | La Première Brique</title>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<link href="https://cdn.prod.website-files.com/6875f542c80274f9d512a0d3/css/la-premiere-briques-new.webflow.shared.064b979f4.min.css" rel="stylesheet" type="text/css"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link href="https://fonts.gstatic.com" rel="preconnect" crossorigin="anonymous"/>
+<script src="https://ajax.googleapis.com/ajax/libs/webfont/1.6.26/webfont.js"></script>
+<script>WebFont.load({ google: { families: ["Manrope:300,400,500,600,700"] } });</script>
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/navbar.css">
+<style>
+.page-hero { padding: 160px 20px 80px; text-align: center; }
+.page-hero h1 { font-size: clamp(2rem, 5vw, 3.5rem); font-weight: 700; margin-bottom: 16px; }
+.page-hero p { font-size: 1.125rem; color: #666; max-width: 600px; margin: 0 auto 40px; }
+.projects-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 24px; padding: 0 40px 80px; max-width: 1200px; margin: 0 auto; }
+.project-card { border-radius: 16px; overflow: hidden; background: #fff; box-shadow: 0 2px 20px rgba(0,0,0,0.06); transition: transform 0.3s ease, box-shadow 0.3s ease; }
+.project-card:hover { transform: translateY(-4px); box-shadow: 0 12px 32px rgba(0,0,0,0.12); }
+.project-card img { width: 100%; height: 200px; object-fit: cover; }
+.project-card-body { padding: 24px; }
+.project-card-body h3 { font-size: 1.25rem; font-weight: 700; margin-bottom: 4px; }
+.project-card-body .location { font-size: 0.875rem; color: #888; margin-bottom: 16px; }
+.progress-wrap { margin-bottom: 12px; }
+.progress-bar-bg { height: 6px; background: #eee; border-radius: 3px; overflow: hidden; }
+.progress-bar-fill { height: 100%; background: #A42515; border-radius: 3px; transition: width 1s ease; }
+.progress-info { display: flex; justify-content: space-between; font-size: 0.8rem; color: #666; margin-top: 6px; }
+.project-meta { display: flex; justify-content: space-between; align-items: center; margin-top: 16px; }
+.project-meta .rate { font-size: 1.1rem; font-weight: 700; color: #A42515; }
+.project-meta .duration { font-size: 0.85rem; color: #888; }
+.btn-invest { display: block; width: 100%; padding: 12px; border: none; background: #A42515; color: #fff; font-family: 'Manrope', sans-serif; font-weight: 600; font-size: 0.95rem; border-radius: 8px; cursor: pointer; margin-top: 16px; transition: background 0.2s; }
+.btn-invest:hover { background: #710F03; }
+</style>
+{% include "analytics.html" %}
+</head>
+<body>
+<div class="page-hero">
+  <h1>Nos projets</h1>
+  <p>Découvrez les opportunités d'investissement immobilier sélectionnées par notre équipe d'experts.</p>
+</div>
+<div class="projects-grid">
+  <div class="project-card">
+    <img src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=600&h=400&fit=crop" alt="L'Ondine"/>
+    <div class="project-card-body">
+      <h3>L'Ondine</h3>
+      <div class="location">Thonon les Bains, France</div>
+      <div class="progress-wrap">
+        <div class="progress-bar-bg"><div class="progress-bar-fill" style="width:81.6%"></div></div>
+        <div class="progress-info"><span>860 485 € / 1 055 000 €</span><span>81.6%</span></div>
+      </div>
+      <div class="project-meta"><span class="rate">12% / an</span><span class="duration">24 mois</span></div>
+      <button class="btn-invest" onclick="alert('Connectez-vous pour investir')">Investir</button>
+    </div>
+  </div>
+  <div class="project-card">
+    <img src="https://images.unsplash.com/photo-1600047509807-ba8f99d2cdde?w=600&h=400&fit=crop" alt="Le Rivoli"/>
+    <div class="project-card-body">
+      <h3>Le Rivoli</h3>
+      <div class="location">Paris, France</div>
+      <div class="progress-wrap">
+        <div class="progress-bar-bg"><div class="progress-bar-fill" style="width:40.3%"></div></div>
+        <div class="progress-info"><span>604 343 € / 1 500 000 €</span><span>40.3%</span></div>
+      </div>
+      <div class="project-meta"><span class="rate">12% / an</span><span class="duration">36 mois</span></div>
+      <button class="btn-invest" onclick="alert('Connectez-vous pour investir')">Investir</button>
+    </div>
+  </div>
+  <div class="project-card">
+    <img src="https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=600&h=400&fit=crop" alt="Le Marbre"/>
+    <div class="project-card-body">
+      <h3>Le Marbre</h3>
+      <div class="location">Strasbourg, France</div>
+      <div class="progress-wrap">
+        <div class="progress-bar-bg"><div class="progress-bar-fill" style="width:73.6%"></div></div>
+        <div class="progress-info"><span>390 250 € / 530 000 €</span><span>73.6%</span></div>
+      </div>
+      <div class="project-meta"><span class="rate">6% / an</span><span class="duration">60 mois</span></div>
+      <button class="btn-invest" onclick="alert('Connectez-vous pour investir')">Investir</button>
+    </div>
+  </div>
+  <div class="project-card">
+    <img src="https://images.unsplash.com/photo-1570129477492-45c003edd2be?w=600&h=400&fit=crop" alt="Le Corner"/>
+    <div class="project-card-body">
+      <h3>Le Corner</h3>
+      <div class="location">Nozay, France</div>
+      <div class="progress-wrap">
+        <div class="progress-bar-bg"><div class="progress-bar-fill" style="width:80.1%"></div></div>
+        <div class="progress-info"><span>418 000 € / 522 000 €</span><span>80.1%</span></div>
+      </div>
+      <div class="project-meta"><span class="rate">11.5% / an</span><span class="duration">24 mois</span></div>
+      <button class="btn-invest" onclick="alert('Connectez-vous pour investir')">Investir</button>
+    </div>
+  </div>
+  <div class="project-card">
+    <img src="https://images.unsplash.com/photo-1605276374104-dee2a0ed3cd6?w=600&h=400&fit=crop" alt="Le Magicien"/>
+    <div class="project-card-body">
+      <h3>Le Magicien</h3>
+      <div class="location">Roubaix, France</div>
+      <div class="progress-wrap">
+        <div class="progress-bar-bg"><div class="progress-bar-fill" style="width:68.4%"></div></div>
+        <div class="progress-info"><span>948 000 € / 1 385 000 €</span><span>68.4%</span></div>
+      </div>
+      <div class="project-meta"><span class="rate">12% / an</span><span class="duration">24 mois</span></div>
+      <button class="btn-invest" onclick="alert('Connectez-vous pour investir')">Investir</button>
+    </div>
+  </div>
+  <div class="project-card">
+    <img src="https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=600&h=400&fit=crop" alt="Le Rivage"/>
+    <div class="project-card-body">
+      <h3>Le Rivage</h3>
+      <div class="location">Cavalaire-sur-Mer, France</div>
+      <div class="progress-wrap">
+        <div class="progress-bar-bg"><div class="progress-bar-fill" style="width:68.3%"></div></div>
+        <div class="progress-info"><span>1 265 000 € / 1 851 000 €</span><span>68.3%</span></div>
+      </div>
+      <div class="project-meta"><span class="rate">12% / an</span><span class="duration">20 mois</span></div>
+      <button class="btn-invest" onclick="alert('Connectez-vous pour investir')">Investir</button>
+    </div>
+  </div>
+</div>
+<script src="js/auth.js"></script>
+</body>
+</html>

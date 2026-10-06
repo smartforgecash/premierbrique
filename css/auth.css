@@ -1,0 +1,111 @@
+/* Authentication Page Styles (Login/Signup) */
+
+body.auth-body {
+  font-family: 'Manrope', sans-serif;
+  color: #101010;
+  background-color: #ffffff;
+}
+
+/* The copied reCAPTCHA key belongs to another domain; never show its error badge. */
+.grecaptcha-badge {
+  display: none !important;
+  visibility: hidden !important;
+}
+
+/* Background image for devise-bg if not fully loaded by CDN */
+.devise-bg {
+  background-image: url('https://d1jdllyufjkaos.cloudfront.net/assets/rebranding/backgrounds/devise-bg-aee8944de342f02cb8592d3f749961db6f5869a84f378a59f5b61cc59c0490b4.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+/* Input Styles Focus Customization */
+.form-control:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 0.2rem rgba(164, 37, 21, 0.25);
+}
+
+/* Primary Button Styling */
+.btn-primary {
+  background-color: var(--color-primary) !important;
+  border-color: var(--color-primary) !important;
+  color: #ffffff !important;
+  font-weight: 600;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.btn-primary:hover {
+  background-color: var(--color-primary-hover) !important;
+  border-color: var(--color-primary-hover) !important;
+}
+
+/* Link Hover */
+.link-primary, .text-primary {
+  color: var(--color-primary) !important;
+  transition: color 0.2s ease;
+}
+
+.link-primary:hover, .text-primary:hover {
+  color: var(--color-primary-hover) !important;
+  text-decoration: underline !important;
+}
+
+/* Alert Notification Overlay */
+.auth-alert {
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1050;
+  min-width: 300px;
+  text-align: center;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+  border-radius: 8px;
+  animation: slideDown 0.3s ease forwards;
+}
+
+@keyframes slideDown {
+  from {
+    top: -50px;
+    opacity: 0;
+  }
+  to {
+    top: 20px;
+    opacity: 1;
+  }
+}
+
+/* Form container constraints */
+.mw-112 {
+  max-width: 448px;
+  width: 100%;
+}
+
+/* Password eye button appearance reset */
+.unset-btn-appearance {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  outline: none;
+}
+
+/* Top Promo Banner style */
+.cms-banner {
+  font-size: 0.875rem;
+  font-weight: 500;
+  background-color: #fbf5ee;
+  color: #8c5d3f;
+  border-bottom: 1px solid #f4e8dc;
+}
+.cms-banner a {
+  color: var(--color-primary);
+  font-weight: 600;
+  text-decoration: none;
+}
+.cms-banner a:hover {
+  text-decoration: underline;
+}

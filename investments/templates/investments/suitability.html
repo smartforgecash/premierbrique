@@ -1,0 +1,14 @@
+{% extends "investments/base_app.html" %}
+{% block title %}Questionnaire | Premier Brique{% endblock %}
+{% block content %}
+  <section class="form-card">
+    <div class="eyebrow">Étape 4 sur 4</div>
+    <h1>Questionnaire investisseur</h1>
+    <p class="muted">Comme les plateformes réglementées, nous vérifions que le produit correspond au profil de l'investisseur.</p>
+    <form method="post">
+      {% csrf_token %}
+      {{ form.as_p }}
+      <button class="btn btn-primary" type="submit">Valider le questionnaire</button>
+    </form>
+  </section>
+{% endblock %}

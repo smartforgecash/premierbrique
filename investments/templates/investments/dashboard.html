@@ -1,0 +1,41 @@
+{% extends "investments/base_app.html" %}
+{% block title %}Mes investissements | Premier Brique{% endblock %}
+{% block nav_investments %}is-active{% endblock %}
+{% block mobile_nav_investments %}is-active{% endblock %}
+
+{% block content %}
+<div class="app-container">
+  <h1 class="screen-title investments-title">Mes investissements</h1>
+
+  {% if investments %}
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Projet</th>
+          <th>Montant</th>
+          <th>Statut</th>
+          <th>Date</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for investment in investments %}
+          <tr>
+            <td><a href="{{ investment.project.get_absolute_url }}">{{ investment.project.title }}</a></td>
+            <td>{{ investment.amount|floatformat:"2" }} €</td>
+            <td>{{ investment.get_status_display }}</td>
+            <td>{{ investment.created_at|date:"d/m/Y" }}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% else %}
+    <section class="empty-investments">
+      <div>
+        <i class="ph ph-coins"></i>
+        <p>Vous n'avez pas encore investi...<br>et si on construisait quelque chose ensemble ?</p>
+        <a class="cta-red" href="/projects.html">Découvrir nos projets <i class="ph ph-arrow-right"></i></a>
+      </div>
+    </section>
+  {% endif %}
+</div>
+{% endblock %}

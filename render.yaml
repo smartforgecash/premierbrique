@@ -1,0 +1,34 @@
+services:
+  - type: web
+    name: premierebrique-frankfurt
+    runtime: python
+    region: frankfurt
+    plan: free
+    buildCommand: pip install -r requirements.txt && python manage.py collectstatic --noinput
+    startCommand: python manage.py migrate && gunicorn premierbrique.wsgi:application --bind 0.0.0.0:$PORT
+    healthCheckPath: /health/
+    envVars:
+      - key: DEBUG
+        value: "false"
+      - key: CARD_PAYMENTS_ENABLED
+        value: "false"
+      - key: DJANGO_SECRET_KEY
+        generateValue: true
+      - key: DATABASE_URL
+        sync: false
+      - key: SOCIAL_AUTH_GOOGLE_OAUTH2_KEY
+        sync: false
+      - key: SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET
+        sync: false
+      - key: STRIPE_PUBLISHABLE_KEY
+        sync: false
+      - key: STRIPE_SECRET_KEY
+        sync: false
+      - key: STRIPE_WEBHOOK_SECRET
+        sync: false
+      - key: BANK_TRANSFER_ACCOUNT_HOLDER
+        value: "Premiere brique"
+      - key: BANK_TRANSFER_IBAN
+        value: "IE70SUMU99036513167213"
+      - key: BANK_TRANSFER_BANK_NAME
+        value: "SumUp"

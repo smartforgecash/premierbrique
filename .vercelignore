@@ -1,0 +1,30 @@
+# Secrets: settings.py reads BASE_DIR/.env, so these must never be uploaded.
+.env
+.env.*
+!.env.example
+env.yaml
+
+# Local state and bulk. .venv alone would blow the 100 MB Hobby upload limit.
+.venv
+db.sqlite3
+db.sqlite3-journal
+*.log
+__pycache__/
+
+# Vercel runs collectstatic itself during the build.
+staticfiles/
+
+# Other hosts' deploy configs - not needed in the bundle.
+Dockerfile
+.dockerignore
+firebase.json
+public/
+render.yaml
+Procfile
+env.yaml.example
+DEPLOY.md
+
+# Dev tooling.
+.agents
+.codex
+scripts/

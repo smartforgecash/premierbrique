@@ -1,0 +1,16 @@
+{
+  "hosting": {
+    "public": "public",
+    "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
+    "trailingSlash": true,
+    "rewrites": [
+      {
+        "source": "**",
+        "run": {
+          "serviceId": "premierbrique",
+          "region": "europe-west1"
+        }
+      }
+    ]
+  }
+}

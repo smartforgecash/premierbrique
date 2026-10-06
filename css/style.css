@@ -1,0 +1,69 @@
+/* Design Tokens and Global Overrides */
+:root {
+  --color-primary: #A42515;
+  --color-primary-hover: #710F03;
+  --color-text: #101010;
+  --color-bg: #FFFFFF;
+  --color-selection: rgba(198, 251, 80, 0.7);
+  --color-pink: #ffa9cb;
+  --color-beige: #fbf5ee;
+  --color-focus: #c6fb50;
+  
+  --font-main: 'Manrope', sans-serif;
+}
+
+.hero_main_btns,
+.footer_head_stores,
+.footer_head_socials {
+  display: none !important;
+}
+
+/* Base Styles */
+body {
+  font-family: var(--font-main);
+  color: var(--color-text);
+  background-color: var(--color-bg);
+  margin: 0;
+  padding: 0;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Custom Selection Highlight */
+::selection {
+  background-color: var(--color-selection);
+  color: #000000;
+}
+
+/* Smooth Scrolling */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Utilities */
+.u-text-primary {
+  color: var(--color-primary) !important;
+}
+
+.u-bg-primary {
+  background-color: var(--color-primary) !important;
+}
+
+/* Fixes for responsive components and interactive states */
+.button_wrapper {
+  transition: background-color 0.25s ease, border-color 0.25s ease, color 0.25s ease, transform 0.15s ease;
+}
+
+.button_wrapper:active {
+  transform: scale(0.98);
+}
+
+/* Project Progress Bar Fill Transition */
+.slider_main_progress_bar_fill {
+  transition: width 1s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Rating badge vertical slider adjustments */
+.swiper-slide {
+  height: auto !important;
+}

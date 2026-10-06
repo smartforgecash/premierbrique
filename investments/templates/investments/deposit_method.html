@@ -1,0 +1,24 @@
+{% extends "investments/base_app.html" %}
+{% block title %}Mode de paiement | Premier Brique{% endblock %}
+{% block extra_head %}<style>.app-topbar,.mobile-bottom-nav{display:none!important}.app-main{padding:0!important}</style>{% endblock %}
+{% block content %}
+<section class="payment-method-screen">
+  <a class="payment-close" href="/account/" aria-label="Fermer"><i class="ph ph-x"></i></a>
+  <h1>Choisissez un mode de<br>paiement</h1>
+  <div class="payment-method-list">
+    <a href="{% url 'deposit' %}?method=banktransfer" class="payment-method-row"{% if not mollie_available %} aria-disabled="true" style="opacity:.55;pointer-events:none"{% endif %}>
+      <span><i class="ph ph-bank"></i></span>
+      <div><strong>Virement bancaire</strong><small>Paiement SEPA sécurisé par Mollie</small></div>
+      <i class="ph {% if mollie_available %}ph-caret-right{% else %}ph-lock{% endif %}"></i>
+    </a>
+    <a href="{% url 'deposit' %}?method=creditcard" class="payment-method-row"{% if not mollie_available %} aria-disabled="true" style="opacity:.55;pointer-events:none"{% endif %}>
+      <span><i class="ph ph-credit-card"></i></span>
+      <div><strong>Carte bancaire</strong><small>Visa ou Mastercard via Mollie</small></div>
+      <i class="ph {% if mollie_available %}ph-caret-right{% else %}ph-lock{% endif %}"></i>
+    </a>
+  </div>
+  {% if not mollie_available %}
+    <p class="muted" style="margin-top:20px">Les paiements seront disponibles dès l'activation de Mollie.</p>
+  {% endif %}
+</section>
+{% endblock %}
