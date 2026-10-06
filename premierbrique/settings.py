@@ -46,7 +46,7 @@ if SITE_URL:
         raise ImproperlyConfigured("SITE_URL must be an absolute http(s) URL.")
     site_hostname = parsed_site_url.hostname
 
-ALLOWED_HOSTS = ["127.0.0.1", "localhost", "testserver"]
+ALLOWED_HOSTS = ["127.0.0.1", "localhost", "testserver", "healthcheck.railway.app"]
 for host in [RAILWAY_PUBLIC_DOMAIN, site_hostname, *os.environ.get("DJANGO_ALLOWED_HOSTS", "").split(",")]:
     host = host.strip()
     if host and host not in ALLOWED_HOSTS:
