@@ -13,7 +13,7 @@ from django.utils import timezone
 from django.views.decorators.csrf import csrf_exempt
 
 from .forms import DepositForm, IdentityVerificationForm, InvestmentForm, InvestorProfileForm, SuitabilityForm
-from .mollie import MollieAPIError, create_payment as create_mollie_payment, get_payment as get_mollie_payment
+from .mollie import MollieAPIError, get_payment as get_mollie_payment
 from .models import Investment, InvestorProfile, Project, WalletTransaction
 from .services import CATALOG_PROJECTS, ensure_demo_projects, project_operator_detail, wallet_balance
 
@@ -212,79 +212,6 @@ def _get_stripe_client():
     return stripe
 
 
-def _stripe_get(obj, *path):
-    current = obj
-    for key in path:
-        if current is None:
-            return ""
-        if isinstance(current, dict):
-            current = current.get(key)
-        else:
-            try:
-                current = getattr(current, key)
-            except (AttributeError, KeyError):
-                return ""
-    return current or ""
-
-
-def _first_value(*values):
-    for value in values:
-        if value is None:
-            continue
-        text = str(value).strip()
-        if text:
-            return text
-    return ""
-
-
-def _stripe_account_holder_name(stripe=None):
-    if not stripe:
-        return ""
-    try:
-        account = stripe.Account.retrieve()
-    except Exception:
-        return ""
-    return _first_value(
-        _stripe_get(account, "business_profile", "name"),
-        _stripe_get(account, "company", "name"),
-        _stripe_get(account, "settings", "dashboard", "display_name"),
-    )
-
-
-def _profile_account_holder_name(profile, user, financial_address=None, stripe=None):
-    configured_name = getattr(settings, "STRIPE_BANK_ACCOUNT_HOLDER_NAME", "")
-    return _first_value(
-        _stripe_get(financial_address, "iban", "account_holder_name"),
-        _stripe_get(financial_address, "account_holder_name"),
-        _stripe_account_holder_name(stripe),
-        configured_name,
-        profile.bank_account_holder_name,
-        "Titulaire du compte Stripe",
-    )
-
-
-def _profile_bank_name(profile, financial_address=None):
-    return _first_value(
-        _stripe_get(financial_address, "iban", "bank_name"),
-        _stripe_get(financial_address, "bank_name"),
-        profile.bank_name,
-        "Citibank Europe plc" if (profile.bic or "").upper().startswith("CITI") else "",
-        "Banque partenaire Stripe",
-    )
-
-
-def _manual_bank_transfer_details():
-    iban = getattr(settings, "BANK_TRANSFER_IBAN", "").replace(" ", "").strip()
-    if not iban:
-        return None
-    return {
-        "account_holder": getattr(settings, "BANK_TRANSFER_ACCOUNT_HOLDER", "").strip() or "Premiere brique",
-        "iban": iban,
-        "bic": getattr(settings, "BANK_TRANSFER_BIC", "").strip(),
-        "bank_name": getattr(settings, "BANK_TRANSFER_BANK_NAME", "").strip() or "Compte bancaire professionnel",
-    }
-
-
 def _confirm_deposit_transaction(transaction):
     transaction.status = WalletTransaction.STATUS_SUCCEEDED
     transaction.save(update_fields=["status"])
@@ -302,17 +229,6 @@ def _confirm_pending_investment(request):
         messages.success(request, "3, 2, 1 Investissement sur votre projet préféré confirmé.")
         return redirect("investment_dashboard")
     return redirect("start_investment", slug=pending["project_slug"])
-
-
-def _mollie_payments_available():
-    return bool(settings.MOLLIE_PAYMENTS_ENABLED and settings.MOLLIE_API_KEY)
-
-
-def _mollie_public_url(request, route_name, query=""):
-    path = reverse(route_name)
-    base_url = settings.MOLLIE_REDIRECT_BASE_URL or settings.SITE_URL
-    url = f"{base_url}{path}" if base_url else request.build_absolute_uri(path)
-    return f"{url}?{query}" if query else url
 
 
 def _mollie_metadata(payment):
@@ -364,84 +280,6 @@ def _sync_mollie_transaction(payment, transaction=None):
             transaction.status = WalletTransaction.STATUS_FAILED
         transaction.save(update_fields=["status", "metadata"])
     return transaction
-
-
-@login_required
-def deposit(request):
-    blocked = _require_verified_email(request)
-    if blocked:
-        return blocked
-    payment_method = request.POST.get("payment_method") or request.GET.get("method") or "creditcard"
-    if payment_method not in {"creditcard", "banktransfer"}:
-        return HttpResponseBadRequest("Mode de paiement invalide.")
-    mollie_available = _mollie_payments_available()
-    if request.method == "POST":
-        form = DepositForm(request.POST, max_amount=Decimal("2000"))
-        if form.is_valid():
-            if not mollie_available:
-                messages.error(request, "Mollie n'est pas encore configuré. Veuillez réessayer plus tard.")
-                return redirect("deposit_method")
-            amount = form.cleaned_data["amount"]
-            transaction = WalletTransaction.objects.create(
-                user=request.user,
-                transaction_type=WalletTransaction.TYPE_DEPOSIT,
-                status=WalletTransaction.STATUS_PENDING,
-                amount=amount,
-                provider=f"mollie-{payment_method}",
-                metadata={"payment_method": payment_method},
-            )
-            redirect_url = _mollie_public_url(
-                request,
-                "mollie_return",
-                f"transaction_id={transaction.pk}",
-            )
-            webhook_url = settings.MOLLIE_WEBHOOK_URL or _mollie_public_url(request, "mollie_webhook")
-            try:
-                payment = create_mollie_payment(
-                    settings.MOLLIE_API_KEY,
-                    amount=amount,
-                    method=payment_method,
-                    description=f"Recharge Premier Brique #{transaction.pk}",
-                    redirect_url=redirect_url,
-                    webhook_url=webhook_url,
-                    metadata={
-                        "transaction_id": str(transaction.pk),
-                        "user_id": str(request.user.pk),
-                    },
-                    idempotency_key=f"premier-brique-deposit-{transaction.pk}",
-                )
-                payment_id = payment.get("id", "")
-                checkout_url = (payment.get("_links", {}).get("checkout", {}) or {}).get("href", "")
-                if not payment_id or not checkout_url:
-                    raise MollieAPIError("Mollie n'a pas retourné de lien de paiement.")
-            except MollieAPIError:
-                logger.exception("Mollie payment creation failed for transaction %s", transaction.pk)
-                transaction.status = WalletTransaction.STATUS_FAILED
-                transaction.save(update_fields=["status"])
-                messages.error(request, "Le paiement n'a pas pu être démarré. Vérifiez la configuration Mollie.")
-                return redirect(f"{reverse('deposit')}?method={payment_method}")
-
-            transaction.reference = payment_id
-            transaction.metadata = {**transaction.metadata, "mollie_status": payment.get("status", "open")}
-            transaction.save(update_fields=["reference", "metadata"])
-            return HttpResponse(status=303, headers={"Location": checkout_url})
-    else:
-        initial = {}
-        pending = request.session.get("pending_investment")
-        if pending:
-            initial["amount"] = pending.get("amount")
-        form = DepositForm(initial=initial, max_amount=Decimal("2000"))
-
-    return render(
-        request,
-        "investments/deposit.html",
-        {
-            "form": form,
-            "balance": wallet_balance(request.user),
-            "payment_method": payment_method,
-            "mollie_available": mollie_available,
-        },
-    )
 
 
 @login_required
@@ -543,146 +381,6 @@ def investment_dashboard(request):
         {
             "investments": investments,
             "balance": wallet_balance(request.user),
-        },
-    )
-
-
-@login_required
-def deposit_method(request):
-    return render(
-        request,
-        "investments/deposit_method.html",
-        {"mollie_available": _mollie_payments_available()},
-    )
-
-
-@login_required
-def bank_transfer(request):
-    return redirect(f"{reverse('deposit')}?method=banktransfer")
-
-    # Legacy Stripe/SumUp code below is intentionally unreachable and retained
-    # temporarily so historical deployment data can still be reviewed.
-    profile, _ = InvestorProfile.objects.get_or_create(user=request.user)
-    manual_bank = _manual_bank_transfer_details()
-    stripe = _get_stripe_client()
-    error = None
-    bank_account_holder_name = manual_bank["account_holder"] if manual_bank else _profile_account_holder_name(profile, request.user, stripe=stripe)
-    bank_name = manual_bank["bank_name"] if manual_bank else _profile_bank_name(profile)
-
-    if request.method == "POST":
-        action = request.POST.get("action", "generate")
-
-        if action == "credit":
-            # The declaration stays pending until Stripe or an administrator validates it.
-            amount_str = request.POST.get("declared_amount", "0").replace(",", ".").strip()
-            try:
-                amount = Decimal(amount_str)
-                if amount <= 0:
-                    raise ValueError("Montant invalide")
-            except Exception:
-                messages.error(request, "Veuillez entrer un montant valide.")
-                return redirect("bank_transfer")
-
-            ref = f"VIR-{timezone.now().strftime('%Y%m%d%H%M%S')}-{request.user.pk}"
-            WalletTransaction.objects.get_or_create(
-                user=request.user,
-                transaction_type=WalletTransaction.TYPE_DEPOSIT,
-                amount=amount,
-                provider="manual-bank-transfer" if manual_bank else "stripe-bank-transfer",
-                status=WalletTransaction.STATUS_PENDING,
-                defaults={
-                    "reference": ref,
-                    "metadata": {
-                        "stripe_customer_id": profile.stripe_customer_id,
-                        "declared_by_user": True,
-                        "manual_bank_transfer": bool(manual_bank),
-                    },
-                },
-            )
-            if manual_bank:
-                messages.info(request, "Virement enregistré. Votre solde sera crédité après validation par notre équipe.")
-            else:
-                messages.info(request, "Virement enregistré. Votre solde sera crédité automatiquement dès réception du paiement par Stripe.")
-            return redirect("bank_transfer")
-
-        # action == "generate": Show the configured business IBAN, or generate one via Stripe.
-        if manual_bank:
-            profile.iban = manual_bank["iban"]
-            profile.bic = manual_bank["bic"]
-            profile.bank_name = manual_bank["bank_name"]
-            profile.bank_account_holder_name = manual_bank["account_holder"]
-            profile.save(update_fields=["iban", "bic", "bank_name", "bank_account_holder_name", "updated_at"])
-            messages.success(request, "Vos coordonnées de virement ont été affichées.")
-            return redirect("bank_transfer")
-
-        # action == "generate": Generate the SEPA IBAN via Stripe
-        if not stripe:
-            error = "Stripe doit être configuré pour générer un virement bancaire."
-        else:
-            try:
-                if not profile.stripe_customer_id:
-                    customer = stripe.Customer.create(
-                        email=request.user.email or None,
-                        name=profile.full_name or request.user.get_full_name() or request.user.get_username(),
-                    )
-                    profile.stripe_customer_id = customer.id
-                    profile.save(update_fields=["stripe_customer_id", "updated_at"])
-
-                funding_instructions = stripe.Customer.create_funding_instructions(
-                    profile.stripe_customer_id,
-                    bank_transfer={
-                        "type": "eu_bank_transfer",
-                        "eu_bank_transfer": {"country": "FR"},
-                    },
-                    funding_type="bank_transfer",
-                    currency="eur",
-                )
-
-                financial_address = funding_instructions.bank_transfer.financial_addresses[0]
-                profile.iban = _stripe_get(financial_address, "iban", "iban")
-                profile.bic = _stripe_get(financial_address, "iban", "bic")
-                profile.bank_name = _profile_bank_name(profile, financial_address)
-                profile.bank_account_holder_name = _profile_account_holder_name(profile, request.user, financial_address, stripe)
-                profile.save()
-                messages.success(request, "Vos coordonnées de virement SEPA ont été générées.")
-                return redirect("bank_transfer")
-            except Exception:
-                logger.exception("Stripe bank-transfer funding instructions failed for user %s", request.user.pk)
-                error = "Impossible de générer les coordonnées de virement. Vérifiez la clé Stripe live et l'activation des virements bancaires SEPA dans Stripe."
-
-    if manual_bank:
-        bank_account_holder_name = manual_bank["account_holder"]
-        bank_name = manual_bank["bank_name"]
-        manual_profile_values = {
-            "iban": manual_bank["iban"],
-            "bic": manual_bank["bic"],
-            "bank_name": manual_bank["bank_name"],
-            "bank_account_holder_name": manual_bank["account_holder"],
-        }
-        changed_fields = []
-        for field, value in manual_profile_values.items():
-            if getattr(profile, field) != value:
-                setattr(profile, field, value)
-                changed_fields.append(field)
-        if changed_fields:
-            profile.save(update_fields=[*changed_fields, "updated_at"])
-    else:
-        bank_account_holder_name = _profile_account_holder_name(profile, request.user, stripe=stripe)
-        bank_name = _profile_bank_name(profile)
-    if profile.bank_account_holder_name != bank_account_holder_name or profile.bank_name != bank_name:
-        profile.bank_account_holder_name = bank_account_holder_name
-        profile.bank_name = bank_name
-        profile.save(update_fields=["bank_account_holder_name", "bank_name", "updated_at"])
-
-    return render(
-        request,
-        "investments/bank_transfer.html",
-        {
-            "profile": profile,
-            "error": error,
-            "bank_account_holder_name": bank_account_holder_name,
-            "bank_name": bank_name,
-            "manual_bank_transfer": bool(manual_bank),
         },
     )
 

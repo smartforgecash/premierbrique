@@ -13,75 +13,6 @@ class PaymentSafetyTests(TestCase):
         self.user = User.objects.create_user(username="investor@example.com", password="safe-test-password")
         self.client.force_login(self.user)
 
-    @override_settings(MOLLIE_PAYMENTS_ENABLED=False, MOLLIE_API_KEY="")
-    def test_unconfigured_mollie_cannot_create_wallet_credit(self):
-        response = self.client.post(
-            reverse("deposit"),
-            {"amount": "100.00", "payment_method": "creditcard"},
-        )
-
-        self.assertRedirects(response, reverse("deposit_method"))
-        self.assertFalse(WalletTransaction.objects.filter(user=self.user).exists())
-
-    @override_settings(MOLLIE_PAYMENTS_ENABLED=True, MOLLIE_API_KEY="test_key")
-    def test_payment_method_page_offers_card_and_bank_transfer(self):
-        response = self.client.get(reverse("deposit_method"))
-
-        self.assertContains(response, f'{reverse("deposit")}?method=creditcard')
-        self.assertContains(response, f'{reverse("deposit")}?method=banktransfer')
-        self.assertContains(response, "Mollie")
-
-    @override_settings(
-        MOLLIE_PAYMENTS_ENABLED=True,
-        MOLLIE_API_KEY="test_key",
-        MOLLIE_WEBHOOK_URL="https://lapremierbrique.com/payments/mollie/webhook/",
-        MOLLIE_REDIRECT_BASE_URL="https://lapremierbrique.com",
-    )
-    @patch("investments.views.create_mollie_payment")
-    def test_card_checkout_creates_pending_transaction_and_redirects(self, create_payment):
-        create_payment.return_value = {
-            "id": "tr_card",
-            "status": "open",
-            "_links": {"checkout": {"href": "https://www.mollie.com/checkout/card"}},
-        }
-
-        response = self.client.post(
-            reverse("deposit"),
-            {"amount": "100.00", "payment_method": "creditcard"},
-        )
-
-        self.assertEqual(response.status_code, 303)
-        self.assertEqual(response["Location"], "https://www.mollie.com/checkout/card")
-        transaction = WalletTransaction.objects.get(user=self.user)
-        self.assertEqual(transaction.amount, Decimal("100.00"))
-        self.assertEqual(transaction.status, WalletTransaction.STATUS_PENDING)
-        self.assertEqual(transaction.provider, "mollie-creditcard")
-        self.assertEqual(transaction.reference, "tr_card")
-        self.assertEqual(create_payment.call_args.kwargs["method"], "creditcard")
-
-    @override_settings(
-        MOLLIE_PAYMENTS_ENABLED=True,
-        MOLLIE_API_KEY="test_key",
-        MOLLIE_REDIRECT_BASE_URL="https://lapremierbrique.com",
-    )
-    @patch("investments.views.create_mollie_payment")
-    def test_bank_transfer_checkout_uses_mollie(self, create_payment):
-        create_payment.return_value = {
-            "id": "tr_bank",
-            "status": "open",
-            "_links": {"checkout": {"href": "https://www.mollie.com/checkout/bank"}},
-        }
-
-        response = self.client.post(
-            reverse("deposit"),
-            {"amount": "250.00", "payment_method": "banktransfer"},
-        )
-
-        self.assertEqual(response.status_code, 303)
-        transaction = WalletTransaction.objects.get(user=self.user)
-        self.assertEqual(transaction.provider, "mollie-banktransfer")
-        self.assertEqual(create_payment.call_args.kwargs["method"], "banktransfer")
-
     @override_settings(MOLLIE_API_KEY="test_key")
     @patch("investments.views.get_mollie_payment")
     def test_paid_webhook_credits_wallet_once(self, get_payment):
@@ -138,14 +69,6 @@ class PaymentSafetyTests(TestCase):
         transaction.refresh_from_db()
         self.assertEqual(transaction.status, WalletTransaction.STATUS_PENDING)
 
-    def test_legacy_bank_transfer_url_redirects_to_mollie_checkout_form(self):
-        response = self.client.get(reverse("bank_transfer"))
-
-        self.assertRedirects(
-            response,
-            f'{reverse("deposit")}?method=banktransfer',
-            fetch_redirect_response=False,
-        )
 
 
 class GoogleLoginLinkTests(TestCase):

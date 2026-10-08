@@ -4,6 +4,7 @@ from django.urls import path, re_path, include
 from django.views.static import serve
 
 from investments import views as investment_views
+from investments import payments
 from . import views
 
 
@@ -22,9 +23,12 @@ urlpatterns = [
     path("onboarding/", investment_views.onboarding, name="onboarding"),
     path("onboarding/identity/", investment_views.identity_verification, name="identity_verification"),
     path("onboarding/questionnaire/", investment_views.suitability_questionnaire, name="suitability_questionnaire"),
-    path("wallet/deposit/method/", investment_views.deposit_method, name="deposit_method"),
-    path("wallet/deposit/bank-transfer/", investment_views.bank_transfer, name="bank_transfer"),
-    path("wallet/deposit/", investment_views.deposit, name="deposit"),
+    path("wallet/deposit/method/", payments.deposit_method, name="deposit_method"),
+    path("wallet/deposit/bank-transfer/", payments.bank_transfer, name="bank_transfer"),
+    path("wallet/deposit/", payments.deposit, name="deposit"),
+    path("payments/sumup/return/", payments.sumup_return, name="sumup_return"),
+    path("payments/sumup/webhook/", payments.sumup_webhook, name="sumup_webhook"),
+    # Legacy callbacks settle existing deposits; new payments use SumUp.
     path("payments/mollie/return/", investment_views.mollie_return, name="mollie_return"),
     path("payments/mollie/webhook/", investment_views.mollie_webhook, name="mollie_webhook"),
     path("wallet/deposit/success/", investment_views.deposit_success, name="deposit_success"),

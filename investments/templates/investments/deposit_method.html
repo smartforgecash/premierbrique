@@ -6,19 +6,17 @@
   <a class="payment-close" href="/account/" aria-label="Fermer"><i class="ph ph-x"></i></a>
   <h1>Choisissez un mode de<br>paiement</h1>
   <div class="payment-method-list">
-    <a href="{% url 'deposit' %}?method=banktransfer" class="payment-method-row"{% if not mollie_available %} aria-disabled="true" style="opacity:.55;pointer-events:none"{% endif %}>
+    <a href="{% url 'bank_transfer' %}" class="payment-method-row"{% if not bank_available %} aria-disabled="true" style="opacity:.55;pointer-events:none"{% endif %}>
       <span><i class="ph ph-bank"></i></span>
-      <div><strong>Virement bancaire</strong><small>Paiement SEPA sécurisé par Mollie</small></div>
-      <i class="ph {% if mollie_available %}ph-caret-right{% else %}ph-lock{% endif %}"></i>
+      <div><strong>Virement bancaire</strong><small>Virement SEPA · Validation après réception</small></div>
+      <i class="ph {% if bank_available %}ph-caret-right{% else %}ph-lock{% endif %}"></i>
     </a>
-    <a href="{% url 'deposit' %}?method=creditcard" class="payment-method-row"{% if not mollie_available %} aria-disabled="true" style="opacity:.55;pointer-events:none"{% endif %}>
+    <a href="{% url 'deposit' %}?method=creditcard" class="payment-method-row"{% if not cards_available %} aria-disabled="true" style="opacity:.55;pointer-events:none"{% endif %}>
       <span><i class="ph ph-credit-card"></i></span>
-      <div><strong>Carte bancaire</strong><small>Visa ou Mastercard via Mollie</small></div>
-      <i class="ph {% if mollie_available %}ph-caret-right{% else %}ph-lock{% endif %}"></i>
+      <div><strong>Carte bancaire</strong><small>Paiement sécurisé par SumUp</small></div>
+      <i class="ph {% if cards_available %}ph-caret-right{% else %}ph-lock{% endif %}"></i>
     </a>
   </div>
-  {% if not mollie_available %}
-    <p class="muted" style="margin-top:20px">Les paiements seront disponibles dès l'activation de Mollie.</p>
-  {% endif %}
+  {% if not cards_available %}<p class="muted" style="margin-top:20px">Le paiement par carte est temporairement indisponible.</p>{% endif %}
 </section>
 {% endblock %}

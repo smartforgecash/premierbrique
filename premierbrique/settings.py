@@ -182,16 +182,16 @@ SECURE_HSTS_PRELOAD = False
 STRIPE_PUBLISHABLE_KEY = os.environ.get("STRIPE_PUBLISHABLE_KEY", "")
 STRIPE_SECRET_KEY = os.environ.get("STRIPE_SECRET_KEY", "")
 STRIPE_WEBHOOK_SECRET = os.environ.get("STRIPE_WEBHOOK_SECRET", "")
-CARD_PAYMENTS_ENABLED = os.environ.get("CARD_PAYMENTS_ENABLED", "false").lower() == "true"
+CARD_PAYMENTS_ENABLED = os.environ.get("CARD_PAYMENTS_ENABLED", "true").lower() == "true"
 STRIPE_BANK_ACCOUNT_HOLDER_NAME = os.environ.get("STRIPE_BANK_ACCOUNT_HOLDER_NAME", "")
 BANK_TRANSFER_ACCOUNT_HOLDER = os.environ.get("BANK_TRANSFER_ACCOUNT_HOLDER", "")
 BANK_TRANSFER_IBAN = os.environ.get("BANK_TRANSFER_IBAN", "")
 BANK_TRANSFER_BIC = os.environ.get("BANK_TRANSFER_BIC", "")
 BANK_TRANSFER_BANK_NAME = os.environ.get("BANK_TRANSFER_BANK_NAME", "")
+# Retained only to reconcile payments initiated before the SumUp switch.
 MOLLIE_API_KEY = os.environ.get("MOLLIE_API_KEY", "").strip()
-MOLLIE_PAYMENTS_ENABLED = os.environ.get("MOLLIE_PAYMENTS_ENABLED", "false").lower() == "true"
-MOLLIE_WEBHOOK_URL = os.environ.get("MOLLIE_WEBHOOK_URL", "").strip()
-MOLLIE_REDIRECT_BASE_URL = os.environ.get("MOLLIE_REDIRECT_BASE_URL", "").strip().rstrip("/")
+SUMUP_API_KEY = os.environ.get("SUMUP_API_KEY", "").strip()
+SUMUP_MERCHANT_CODE = os.environ.get("SUMUP_MERCHANT_CODE", "").strip()
 GOOGLE_ANALYTICS_ID = os.environ.get("GOOGLE_ANALYTICS_ID", "").strip()
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"

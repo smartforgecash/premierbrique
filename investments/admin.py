@@ -5,6 +5,7 @@ from django.http import FileResponse, Http404
 from django.urls import path, reverse
 from django.utils.html import format_html
 
+from .payments import confirm_bank_transfer
 from .models import EmailVerificationCode, Investment, InvestorProfile, Project, WalletTransaction
 
 
@@ -65,8 +66,22 @@ class InvestorProfileAdmin(admin.ModelAdmin):
 
 @admin.register(WalletTransaction)
 class WalletTransactionAdmin(admin.ModelAdmin):
-    list_display = ("user", "transaction_type", "status", "amount", "provider", "created_at")
+    list_display = ("user", "transaction_type", "status", "amount", "provider", "reference", "created_at")
+    search_fields = ("reference", "user__username", "user__email")
+    readonly_fields = ("user", "transaction_type", "amount", "provider", "reference", "metadata", "status", "created_at")
+    actions = ("confirm_received_transfers",)
     list_filter = ("transaction_type", "status", "provider")
+
+    def has_add_permission(self, request):
+        return False
+
+    def has_delete_permission(self, request, obj=None):
+        return False
+
+    @admin.action(description="Confirmer les virements reçus sur le compte bancaire", permissions=["change"])
+    def confirm_received_transfers(self, request, queryset):
+        count = sum(confirm_bank_transfer(pk, request.user) for pk in queryset.values_list("pk", flat=True))
+        self.message_user(request, f"{count} virement(s) confirmé(s) après réception bancaire.")
 
 
 @admin.register(Investment)
