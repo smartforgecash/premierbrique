@@ -15,6 +15,15 @@ Railway provides `RAILWAY_PUBLIC_DOMAIN` automatically for its generated domain.
 
 ## 2. Google sign-in and admin
 
+The shared `analytics.html` include installs Google Ads tag `AW-18397712539`
+on website pages. `GOOGLE_ADS_ID` can override this public tag ID; an empty
+value disables it. `GOOGLE_ANALYTICS_ID` optionally adds a GA4 destination
+through the same loader. No Railway secret is required for the Ads tag.
+The French cookie control loads Google only after acceptance and remembers
+the choice for six months. Use the bottom-left Cookies button to change it.
+Verify with Tag Assistant after accepting cookies. This installs the base
+tag only; purchase/signup conversion events need their own event labels.
+
 If you use Google sign-in, set `SOCIAL_AUTH_GOOGLE_OAUTH2_KEY` and `SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET` in the web service. In the matching Google OAuth web client, add the exact authorized redirect URI `https://<generated-domain>/auth/complete/google-oauth2/`. Later also add `https://your-domain.example/auth/complete/google-oauth2/`. Add the corresponding origins without paths. Do not delete old entries until the new sign-in has been tested. Update any Google OAuth consent-screen authorized-domain settings required for the new domain.
 
 Once the database is live, create a new administrator with `python manage.py createsuperuser` from the Railway service shell, then visit `/admin/`. No admin account is created from a default password. Configure an SMTP provider before relying on email delivery; the default email backend discards mail.

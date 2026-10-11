@@ -1,9 +1,4 @@
-{% if google_analytics_id %}
-<script async src="https://www.googletagmanager.com/gtag/js?id={{ google_analytics_id }}"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag("js", new Date());
-  gtag("config", "{{ google_analytics_id }}");
-</script>
+{% if google_ads_id or google_analytics_id %}
+<!-- Google tag: loaded after the visitor accepts measurement cookies. -->
+<script defer src="/js/google-tag.js?v=1" data-google-ads-id="{{ google_ads_id }}" data-google-analytics-id="{{ google_analytics_id }}"></script>
 {% endif %}
