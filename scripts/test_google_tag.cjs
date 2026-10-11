@@ -4,6 +4,16 @@ const fs = require('node:fs');
 const vm = require('node:vm');
 const source = fs.readFileSync('js/google-tag.js', 'utf8');
 
+test('public templates use the shared consent loader without the legacy container', () => {
+  for (const name of fs.readdirSync('.').filter(name => name.endsWith('.html'))) {
+    const html = fs.readFileSync(name, 'utf8');
+    assert.doesNotMatch(html, /GTM-M7FSFSM|AW-16805492716|G-13B51XTD31/, name);
+    if (/<head[\s>]/i.test(html)) {
+      assert.equal((html.match(/include "analytics.html"/g) || []).length, 1, name);
+    }
+  }
+});
+
 function browser(saved, blockedStorage = false) {
   const head = [], body = [], stored = {};
   function element(tag) {
