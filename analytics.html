@@ -1,4 +1,4 @@
 {% if google_ads_id or google_analytics_id %}
 <!-- Google tag: loaded after the visitor accepts measurement cookies. -->
-<script defer src="/js/google-tag.js?v=1" data-google-ads-id="{{ google_ads_id }}" data-google-analytics-id="{{ google_analytics_id }}"></script>
+<script defer src="/js/google-tag.js?v=2" data-google-ads-id="{{ google_ads_id }}" data-google-analytics-id="{{ google_analytics_id }}"{% if google_ads_page_view %} data-google-ads-page-view="{{ google_ads_page_view }}"{% endif %}></script>
 {% endif %}

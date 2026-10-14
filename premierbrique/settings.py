@@ -194,6 +194,7 @@ SUMUP_API_KEY = os.environ.get("SUMUP_API_KEY", "").strip()
 SUMUP_MERCHANT_CODE = os.environ.get("SUMUP_MERCHANT_CODE", "").strip()
 GOOGLE_ANALYTICS_ID = os.environ.get("GOOGLE_ANALYTICS_ID", "").strip()
 GOOGLE_ADS_ID = os.environ.get("GOOGLE_ADS_ID", "AW-18397712539").strip()
+GOOGLE_ADS_PAGE_VIEW_LABEL = os.environ.get("GOOGLE_ADS_PAGE_VIEW_LABEL", "pDnVCKOztpgdEJuh28RE").strip()
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 LOGIN_URL = "/login.html"

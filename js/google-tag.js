@@ -41,6 +41,16 @@
     ids.forEach(function (id) {
       window.gtag("config", id, { allow_ad_personalization_signals: false });
     });
+    // Only marked conversion pages send the event, once per page load after consent.
+    var pageViewDestination = source.dataset.googleAdsPageView || "";
+    if (/^AW-\d+\/[A-Za-z0-9_-]+$/.test(pageViewDestination) &&
+        ids.indexOf(pageViewDestination.split("/")[0]) !== -1) {
+      window.gtag("event", "conversion", {
+        send_to: pageViewDestination,
+        value: 1.0,
+        currency: "EUR"
+      });
+    }
     var script = document.createElement("script");
     script.async = true;
     script.src = "https://www.googletagmanager.com/gtag/js?id=" + encodeURIComponent(ids[0]);

@@ -14,7 +14,7 @@ test('public templates use the shared consent loader without the legacy containe
   }
 });
 
-function browser(saved, blockedStorage = false) {
+function browser(saved, blockedStorage = false, pageViewDestination = '') {
   const head = [], body = [], stored = {};
   function element(tag) {
     return { tag, hidden: false, handlers: {}, setAttribute() {}, focus() {},
@@ -23,7 +23,7 @@ function browser(saved, blockedStorage = false) {
   }
   const context = {
     document: {
-      currentScript: { dataset: { googleAdsId: 'AW-18397712539', googleAnalyticsId: 'G-TEST123' } },
+      currentScript: { dataset: { googleAdsId: 'AW-18397712539', googleAnalyticsId: 'G-TEST123', googleAdsPageView: pageViewDestination } },
       head: { appendChild(node) { head.push(node); } },
       body: { appendChild(node) { body.push(node); } },
       createElement: element, cookie: ''
@@ -56,6 +56,40 @@ test('no Google request before consent; accept loads once and configures both de
   assert.equal(commands[1][2].ad_personalization, 'denied');
   vm.runInNewContext(source, b.context);
   assert.equal(b.scripts().length, 1);
+});
+
+const pageViewDestination = 'AW-18397712539/pDnVCKOztpgdEJuh28RE';
+const conversions = b => b.context.dataLayer.map(args => Array.from(args))
+  .filter(c => c[0] === 'event' && c[1] === 'conversion');
+
+test('conversion waits for acceptance and is sent once despite repeated initialization or clicks', () => {
+  const b = browser(null, false, pageViewDestination);
+  assert.equal(conversions(b).length, 0);
+  b.choose('refused');
+  assert.equal(conversions(b).length, 0);
+  b.choose('accepted');
+  b.choose('accepted');
+  vm.runInNewContext(source, b.context);
+  assert.equal(conversions(b).length, 1);
+  const event = conversions(b)[0];
+  assert.equal(event[2].send_to, pageViewDestination);
+  assert.equal(event[2].value, 1);
+  assert.equal(event[2].currency, 'EUR');
+  const commands = b.context.dataLayer.map(args => Array.from(args));
+  assert.ok(commands.indexOf(commands.find(c => c[0] === 'config')) <
+    commands.indexOf(commands.find(c => c[0] === 'event')));
+});
+
+test('conversion respects saved consent and does not fire for invalid or different destinations', () => {
+  const accepted = JSON.stringify({value:'accepted',time:Date.now()});
+  assert.equal(conversions(browser(accepted, false, pageViewDestination)).length, 1);
+  assert.equal(conversions(browser(JSON.stringify({value:'refused',time:Date.now()}), false, pageViewDestination)).length, 0);
+  for (const destination of ['', 'AW-999999/someLabel', 'invalid']) {
+    assert.equal(conversions(browser(accepted, false, destination)).length, 0);
+  }
+  const blockedStorage = browser(null, true, pageViewDestination);
+  blockedStorage.choose('accepted');
+  assert.equal(conversions(blockedStorage).length, 1);
 });
 
 test('refusal blocks loading and can later be changed to acceptance', () => {

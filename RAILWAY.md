@@ -21,8 +21,14 @@ value disables it. `GOOGLE_ANALYTICS_ID` optionally adds a GA4 destination
 through the same loader. No Railway secret is required for the Ads tag.
 The French cookie control loads Google only after acceptance and remembers
 the choice for six months. Use the bottom-left Cookies button to change it.
-Verify with Tag Assistant after accepting cookies. This installs the base
-tag only; purchase/signup conversion events need their own event labels.
+Verify with Tag Assistant after accepting cookies. The "Page vue" event uses
+label `pDnVCKOztpgdEJuh28RE` on the investment listing (`/investir`, `/investir.html`,
+and `/projects.html`) only. It fires once per page load after consent, including
+when acceptance happens on that page. The supplied event's EUR 1 value is a nominal
+page-view value, not investment revenue. `GOOGLE_ADS_PAGE_VIEW_LABEL` overrides
+the label; an empty value disables the event. Purchase/signup conversions require
+separate event labels and must not reuse this page-view action. Consent refusal
+blocks the Google script and conversion; test with acceptance in Tag Assistant.
 
 If you use Google sign-in, set `SOCIAL_AUTH_GOOGLE_OAUTH2_KEY` and `SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET` in the web service. In the matching Google OAuth web client, add the exact authorized redirect URI `https://<generated-domain>/auth/complete/google-oauth2/`. Later also add `https://your-domain.example/auth/complete/google-oauth2/`. Add the corresponding origins without paths. Do not delete old entries until the new sign-in has been tested. Update any Google OAuth consent-screen authorized-domain settings required for the new domain.
 
